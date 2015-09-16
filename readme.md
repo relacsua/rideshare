@@ -1,6 +1,6 @@
 # RideShare
 
-Application that matches drivers with passengers.
+A CS2102 project. Application that matches drivers with passengers.
 
 ## Setup with Vagrant
 
@@ -15,5 +15,5 @@ Application that matches drivers with passengers.
 1. Clone this repository into your projects folder.
 2. Run ```$ composer update```. Make sure [composer](https://getcomposer.org/doc/00-intro.md) is installed before you run this command.
 3. Change directory to your homestead directory and run these commands: ```$ vagrant run``` and ```$ vagrant ssh```
-4. Setup oracle in the homestead environment by following this [guide](http://kogentadono.com/2011/11/02/installing-oci8-on-ubuntu/);
+4. Setup oracle in the homestead environment by following this [guide](http://kogentadono.com/2011/11/02/installing-oci8-on-ubuntu/).
 5. The website can be accessed at http://homstead.app.
