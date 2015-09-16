@@ -145,6 +145,8 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        'yajra\Oci8\Oci8ServiceProvider',
+
     ],
 
     /*
