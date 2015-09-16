@@ -1,27 +1,24 @@
-## Laravel PHP Framework
+# RideShare
 
-[![Build Status](https://travis-ci.org/laravel/framework.svg)](https://travis-ci.org/laravel/framework)
-[![Total Downloads](https://poser.pugx.org/laravel/framework/d/total.svg)](https://packagist.org/packages/laravel/framework)
-[![Latest Stable Version](https://poser.pugx.org/laravel/framework/v/stable.svg)](https://packagist.org/packages/laravel/framework)
-[![Latest Unstable Version](https://poser.pugx.org/laravel/framework/v/unstable.svg)](https://packagist.org/packages/laravel/framework)
-[![License](https://poser.pugx.org/laravel/framework/license.svg)](https://packagist.org/packages/laravel/framework)
+Application that matches drivers with passengers.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as authentication, routing, sessions, queueing, and caching.
+## Setup with Vagrant
 
-Laravel is accessible, yet powerful, providing powerful tools needed for large, robust applications. A superb inversion of control container, expressive migration system, and tightly integrated unit testing support give you the tools you need to build any application with which you are tasked.
+### Setting up the vagrant environment
 
-## Official Documentation
+1. Install [Virtual Box](https://www.virtualbox.org/)
+2. Install [Vagrant](https://www.vagrantup.com/downloads.html)
+3. Setup [laravel/homestead](http://laravel.com/docs/5.1/homestead) environment.
 
-Documentation for the framework can be found on the [Laravel website](http://laravel.com/docs).
+### Setting up project
 
-## Contributing
+1. Clone this repository into your projects folder.
+2. Run ```bash $ composer update```. Make sure [composer](https://getcomposer.org/doc/00-intro.md) is installed before you run this command.
+3. Change directory to your homestead directory
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](http://laravel.com/docs/contributions).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
-
-### License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT)
+```bash
+$ vagrant run
+$ vagrant ssh
+```
+4. Setup oracle in the homestead environment by following this [guide](http://kogentadono.com/2011/11/02/installing-oci8-on-ubuntu/);
+5. The website can be accessed at http://homstead.app.
