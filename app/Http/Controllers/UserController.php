@@ -18,8 +18,8 @@ class UserController extends Controller
     public function index($name)
     {
         // dd (DB::connection()->getPdo());
-        $faculty = DB::select('SELECT s.name FROM student s WHERE s.department=? AND ROWNUM=1', [$name]);
-        return view('welcome', ['faculty' => $faculty[0]->name]);
+        $faculty = DB::select("SELECT s.faculty FROM student s WHERE s.name=? AND ROWNUM=1", [$name]);
+        return view('welcome', ['faculty' => $faculty[0]->faculty]);
     }
 
 }
