@@ -25,7 +25,7 @@ class UserController extends Controller
         // Debugbar::warning('Watch out…');
         // Debugbar::addMessage('Another message', 'mylabel');
         if(empty($faculty))
-            return view('welcome', ['faculty' => 'Not Found']);
+            return view('welcome', ['faculty' => 'Nicholas']);
         else
             return view('welcome', ['faculty' => $faculty[0]->faculty]);
     }
