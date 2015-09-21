@@ -12,3 +12,4 @@
 */
 
 Route::get('/students/{name}', ['uses' => 'UserController@index']);
+Route::get('/', ['uses' => 'UserController@home']);

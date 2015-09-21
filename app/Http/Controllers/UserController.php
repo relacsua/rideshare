@@ -30,4 +30,14 @@ class UserController extends Controller
             return view('welcome', ['faculty' => $faculty[0]->faculty]);
     }
 
+    /**
+     * Method shows how to query database and render view with data.
+     *
+     * @return Response
+     */
+    public function home()
+    {
+        return view('home');
+    }
+
 }
