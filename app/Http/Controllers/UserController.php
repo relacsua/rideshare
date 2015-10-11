@@ -25,7 +25,7 @@ class UserController extends Controller
         // Debugbar::warning('Watch out…');
         // Debugbar::addMessage('Another message', 'mylabel');
         if(empty($faculty))
-            return view('welcome', ['faculty' => 'go and die']);
+            return view('welcome', ['faculty' => 'Not found']);
         else
             return view('welcome', ['faculty' => $faculty[0]->faculty]);
     }
@@ -37,7 +37,10 @@ class UserController extends Controller
      */
     public function home()
     {
-        return view('home');
+        return view('home')->with([
+            'appname' => 'RideShare',
+            'module' => 'CS2102'
+        ]);
     }
 
 }

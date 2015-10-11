@@ -38,7 +38,8 @@
     <body>
         <div class="container">
             <div class="content">
-                <div class="title">This is going to be the home page</div>
+                <div class="title">{{$appname}}</div>
+                <div class="title">A {{$module}} project</div>
             </div>
         </div>
     </body>
