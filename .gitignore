@@ -1,4 +1,5 @@
 /vendor
+bower
 /node_modules
 Homestead.yaml
 Homestead.json
