@@ -1,6 +1,7 @@
 CREATE TABLE Car(
   carPlateNo VARCHAR(10) PRIMARY KEY,
-  carModel VARCHAR(100)
+  carModel VARCHAR(100),
+  numSeats INT
 );
 
 CREATE TABLE Owns(
@@ -13,11 +14,25 @@ CREATE TABLE Owns(
 );
 
 CREATE TABLE Person(
-  email VARCHAR(256) PRIMARY KEY,
-  name VARCHAR(256),
-  balance FLOAT,
-  gender VARCHAR(6) CHECK (gender = 'male' OR gender = 'female')
+  email VARCHAR(255) PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  balance INT DEFAULT 0,
+  age INT,
+  gender VARCHAR(6) NOT NULL,
+  avatar VARCHAR(255),
+  CONSTRAINT allowedGender CHECK (gender IN ('MALE', 'FEMALE')),
+  CONSTRAINT ageRestriction CHECK (age >= 18),
+  CONSTRAINT minBalance CHECK (balance >= 0)
 );
+
+CREATE TABLE Profile(
+  token CLOB NOT NULL,
+  userID VARCHAR(17),
+  email VARCHAR(255),
+  PRIMARY KEY(userId, email),
+  FOREIGN KEY (email) REFERENCES Person(email)
+);
+
 
 CREATE TABLE Ride_Driver(
   departDate DATE,
@@ -26,7 +41,7 @@ CREATE TABLE Ride_Driver(
   destination VARCHAR(256),
   driverEmail VARCHAR(256),
   collected VARCHAR(5) CHECK (collected = 'TRUE' OR collected = 'FALSE'),
-  price FLOAT,
+  price INT,
   numSeats INT,
   PRIMARY KEY (departDate, departTime, driverEmail),
   FOREIGN KEY (driverEmail) REFERENCES Person(email)

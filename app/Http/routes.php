@@ -11,5 +11,10 @@
 |
 */
 
-Route::get('/students/{name}', ['uses' => 'UserController@index']);
-Route::get('/', ['uses' => 'UserController@home']);
+Route::get('/', ['uses' => 'UserController@welcome']);
+// Route::post('/', ['uses' => 'UserController@store']);
+Route::get('/login/facebook', ['uses' => 'UserController@redirectToFacebook']);
+Route::get('/login/facebook/callback', ['uses' => 'UserController@handleFacebookCallback']);
+
+Route::get('/students/{name}', ['uses' => 'SampleController@index']);
+Route::get('sample', ['uses' => 'SampleController@sample']);

@@ -1,44 +1,36 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>{{$faculty}}</title>
-
+        <meta charset="utf-8">
+        <title>RideShare | Share your rides</title>
         <link href="https://fonts.googleapis.com/css?family=Lato:100" rel="stylesheet" type="text/css">
-
-        <style>
-            html, body {
-                height: 100%;
-            }
-
-            body {
-                margin: 0;
-                padding: 0;
-                width: 100%;
-                display: table;
-                font-weight: 100;
-                font-family: 'Lato';
-            }
-
-            .container {
-                text-align: center;
-                display: table-cell;
-                vertical-align: middle;
-            }
-
-            .content {
-                text-align: center;
-                display: inline-block;
-            }
-
-            .title {
-                font-size: 96px;
-            }
-        </style>
+        <link href='https://fonts.googleapis.com/css?family=Raleway:100,600' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" type="text/css" href="{{ asset('/css/welcome.css') }}">
     </head>
     <body>
         <div class="container">
             <div class="content">
-                <div class="title">{{$faculty}}</div>
+                <img class='icon' src="{{ asset('/img/rideshare.png') }}" />
+                <h1>RideShare</h2>
+                <p class="slogan">Share your rides &middot; Save some cash &middot; Make new friends</p>
+                <div class="form-wrapper">
+                    {!! Form::open(['url' => '/']) !!}
+                        {!! Form::email('email', null, ['placeholder' => 'email']) !!}
+                        {!! Form::password('password', ['placeholder' => 'password']) !!}
+                        {!! Form::submit('login') !!}
+                    {!! Form::close() !!}
+
+                    @if ($errors->any())
+                        <p><span style="color: red;">{{ count($errors->all()) }}</span> errors found.</p>
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    @endif
+                    <hr />
+                    <a href='/login/facebook' class='fb-btn'>Register via facebook</a>
+                </div>
             </div>
         </div>
     </body>

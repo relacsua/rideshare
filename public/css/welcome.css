@@ -1,0 +1,133 @@
+/*
+ * html, body
+ */
+html, body {
+	height: 100%;
+	font-family: 'raleway';
+	font-weight: 100;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  display: table;
+  background-image: url("/img/road-image.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+/*
+ * Centering the content
+ */
+
+.container {
+  text-align: center;
+  display: table-cell;
+  vertical-align: middle;
+}
+
+/*
+ * content
+ */
+.content {
+  text-align: center;
+  display: inline-block;
+}
+
+.icon {
+	width: 50px;
+	height: auto;
+}
+
+h1 {
+	font-weight: 100;
+	font-family: 'Lato';
+  font-size: 80px;
+  margin: 0;
+}
+
+
+/*
+* form
+*/
+
+input {
+	display: block;
+	width: 100%;
+	border: 0px;
+	margin: 10px 0;
+	height: 30px;
+}
+
+input[type="email"],
+input[type="password"] {
+	text-indent: 10px;
+	font-family: 'raleway';
+	font-weight: 600;
+}
+
+::-webkit-input-placeholder {
+  font-family: 'raleway';
+	text-transform: uppercase;
+	font-weight: 600;
+}
+
+:-moz-placeholder { /* Firefox 18- */
+  font-family: 'raleway';
+	text-transform: uppercase;
+	font-weight: 600;
+}
+
+::-moz-placeholder {  /* Firefox 19+ */
+  font-family: 'raleway';
+	text-transform: uppercase;
+	font-weight: 600;
+}
+
+:-ms-input-placeholder {  
+  font-family: 'raleway';
+	text-transform: uppercase;
+	font-weight: 600;
+}
+
+input[type="submit"] {
+	background-color: #db9e36;
+	text-transform: uppercase;
+	font-family: 'raleway';
+	font-weight: 600;
+	color: #ffffff;
+	cursor: pointer;
+	border: 2px solid #db9e36;
+}
+
+input[type="submit"]:hover {
+	color: #db9e36;
+	background-color: #ffffff;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid #bd4932;
+}
+
+.fb-btn {
+	display: block;
+	text-decoration: none;
+	color: #ffffff;
+	background-color: #3b5998;
+	width: 100%;
+	text-transform: uppercase;
+	font-family: 'raleway';
+	font-weight: 600;
+	padding: 8px 0;
+	border: 0;
+	cursor: pointer;
+	font-size: 11px;
+	border: 2px solid #3b5998;
+}
+
+.fb-btn:hover {
+	background-color: #ffffff;
+	color: #3b5998;
+}

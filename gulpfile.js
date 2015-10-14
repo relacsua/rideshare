@@ -17,5 +17,5 @@ elixir(function(mix) {
   //   mix.scripts([
   //   	'../bower/jquery/dist/jquery.min.js',
   //   	'../bower/bootstrap/dist/js/bootstrap.js'
-		// ], 'public/js/vendor.js');
+		// ], 'public/js/vendor.js');b
 });

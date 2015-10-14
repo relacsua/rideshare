@@ -6,41 +6,63 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+
 use DB;
-use Debugbar;
+use Socialize;
 
 class UserController extends Controller
 {
-    /**
+
+		 /**
      * Method shows how to query database and render view with data.
      *
      * @return Response
      */
-    public function index($name)
+    public function welcome()
     {
-        // dd (DB::connection()->getPdo());
-        $faculty = DB::select("SELECT s.faculty FROM student s WHERE s.name=upper(?) AND ROWNUM=1", [$name]);
-        Debugbar::info($faculty);
-        // Debugbar::error('Error!');
-        // Debugbar::warning('Watch out…');
-        // Debugbar::addMessage('Another message', 'mylabel');
-        if(empty($faculty))
-            return view('welcome', ['faculty' => 'Not found']);
-        else
-            return view('welcome', ['faculty' => $faculty[0]->faculty]);
+        return view('welcome');
     }
 
-    /**
-     * Method shows how to query database and render view with data.
-     *
-     * @return Response
-     */
-    public function home()
+    public function redirectToFacebook()
     {
-        return view('home')->with([
-            'appname' => 'RideShare',
-            'module' => 'CS2102'
-        ]);
+        return Socialize::with('facebook')->scopes(['email'])->redirect();
     }
 
+    public function handleFacebookCallback()
+    {
+        $user = Socialize::with('facebook')->user();
+
+        $data = array(
+        	'id'			=> $user->getId(),
+        	'name'		=> $user->getName(),
+        	'email'		=> $user->getEmail(),
+        	'image'		=> $user->avatar_original,
+        	'gender'	=> $user->user['gender'],
+        	'token'		=> $user->token
+        );
+        // $user_profile = DB::select("SELECT p.email FROM Profile p WHERE p.userID=?", [$user->getId()]);
+
+        // if(!$user_profile) {
+        // 	DB::insert("INSERT INTO Profile (token, userID, email) values ($user->)")
+        // } else {
+
+        // }
+
+        dd($data);
+
+        // 1) check if facebook id already exist in the Profile table
+        // 	a) if exist, update token in Profile table
+        //	b) fetch User via Profile
+        //	c) login user & store info in session
+        // 2) if id doesnt exist,
+        //	a) store data in both Profile and User table
+        //	b) store user data in a session
+        //	c) redirect to a create profile page
+
+        // $user->getId();
+        // $user->getNickname();
+        // $user->getName();
+        // $user->getEmail();
+        // $user->getAvatar();
+    }
 }

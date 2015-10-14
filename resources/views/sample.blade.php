@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>RideShare</title>
-        <link href="{{ asset('/css/app.css') }}" rel="stylesheet" type="text/css">
+        <title>{{$faculty}}</title>
+
         <link href="https://fonts.googleapis.com/css?family=Lato:100" rel="stylesheet" type="text/css">
+
         <style>
             html, body {
                 height: 100%;
@@ -16,9 +17,6 @@
                 display: table;
                 font-weight: 100;
                 font-family: 'Lato';
-                background-image: url("{{ asset('/img/sgbg.jpg') }}");
-                background-repeat: no-repeat;
-                background-size: cover;
             }
 
             .container {
@@ -40,10 +38,8 @@
     <body>
         <div class="container">
             <div class="content">
-                <div class="title">{{$appname}}</div>
-                <div class="title">A {{$module}} project</div>
+                <div class="title">{{$faculty}}</div>
             </div>
         </div>
-    <script src="{{ asset('/js/vendor.js') }}"></script>
     </body>
 </html>
