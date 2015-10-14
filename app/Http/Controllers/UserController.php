@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Redirect;
 
 use DB;
 use Socialize;
@@ -18,9 +19,28 @@ class UserController extends Controller
      *
      * @return Response
      */
-    public function welcome()
+    public function welcome(Request $request)
     {
-        return view('welcome');
+    		$user = $request->session()->get('email');
+    		
+    		if($user) {
+    			return Redirect::to('/');
+    		} else {
+    			return view('welcome');
+    		}
+        
+    }
+
+    public function home(Request $request)
+    {
+    	$user = $request->session()->get('email');
+    	
+    	if(!$user) {
+    		return Redirect::to('/welcome');
+    	} else {
+    		return view('home');
+    	}
+
     }
 
     public function redirectToFacebook()
@@ -28,41 +48,28 @@ class UserController extends Controller
         return Socialize::with('facebook')->scopes(['email'])->redirect();
     }
 
-    public function handleFacebookCallback()
+    public function handleFacebookCallback(Request $request)
     {
         $user = Socialize::with('facebook')->user();
+        $user_email = DB::select("SELECT p.email FROM Profile p WHERE p.userID=?", [$user->getId()]);
 
-        $data = array(
-        	'id'			=> $user->getId(),
-        	'name'		=> $user->getName(),
-        	'email'		=> $user->getEmail(),
-        	'image'		=> $user->avatar_original,
-        	'gender'	=> $user->user['gender'],
-        	'token'		=> $user->token
-        );
-        // $user_profile = DB::select("SELECT p.email FROM Profile p WHERE p.userID=?", [$user->getId()]);
+        if(!$user_email) {
+        	DB::insert("INSERT INTO Person (email, name, gender, avatar) VALUES (?,?,?,?)", [$user->getEmail(), $user->getName(), strtoupper($user->user['gender']), $user->avatar_original]);
+        	DB::insert("INSERT INTO Profile (token, userID, email) VALUES (?,?,?)", [$user->token, $user->getID(), $user->getEmail()]);
+        	$request->session()->put('email', $user->getEmail());
+        	return Redirect::to('/profile');
+        } else {
+					$request->session()->put('email', $user_email);
+					return Redirect::to('/');
+        }
+    }
 
-        // if(!$user_profile) {
-        // 	DB::insert("INSERT INTO Profile (token, userID, email) values ($user->)")
-        // } else {
+    public function editProfile(Request $request) {
+    	return view('profile.edit', ['email' => $request->session()->get('email')]);
+    }
 
-        // }
-
-        dd($data);
-
-        // 1) check if facebook id already exist in the Profile table
-        // 	a) if exist, update token in Profile table
-        //	b) fetch User via Profile
-        //	c) login user & store info in session
-        // 2) if id doesnt exist,
-        //	a) store data in both Profile and User table
-        //	b) store user data in a session
-        //	c) redirect to a create profile page
-
-        // $user->getId();
-        // $user->getNickname();
-        // $user->getName();
-        // $user->getEmail();
-        // $user->getAvatar();
+    public function logout(Request $request) {
+    	$request->session()->forget('email');
+    	return Redirect::to('/welcome');
     }
 }
