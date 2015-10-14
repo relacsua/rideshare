@@ -20,9 +20,11 @@ CREATE TABLE Person(
   age INT,
   gender VARCHAR(6) NOT NULL,
   avatar VARCHAR(255),
+  password VARCHAR(255),
   CONSTRAINT allowedGender CHECK (gender IN ('MALE', 'FEMALE')),
   CONSTRAINT ageRestriction CHECK (age >= 18),
-  CONSTRAINT minBalance CHECK (balance >= 0)
+  CONSTRAINT minBalance CHECK (balance >= 0),
+  CONSTRAINT minLengthPassword CHECK (length(password) >= 6)
 );
 
 CREATE TABLE Profile(
@@ -30,9 +32,8 @@ CREATE TABLE Profile(
   userID VARCHAR(17),
   email VARCHAR(255),
   PRIMARY KEY(userId, email),
-  FOREIGN KEY (email) REFERENCES Person(email)
+  FOREIGN KEY (email) REFERENCES Person(email) ON DELETE CASCADE
 );
-
 
 CREATE TABLE Ride_Driver(
   departDate DATE,

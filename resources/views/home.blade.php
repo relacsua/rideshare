@@ -10,6 +10,7 @@
     <body>
         <div>HEADER</div>
         <p>welcome to home page</p>
+        <a href="/profile">Profile</a>
         <a href="/logout">Logout</a>
         <div>footer</div>
     </body>

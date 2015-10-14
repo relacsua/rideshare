@@ -68,6 +68,18 @@ class UserController extends Controller
     	return view('profile.edit', ['email' => $request->session()->get('email')]);
     }
 
+    public function login(Requests\LoginRequest $request) {
+    	$email = $request->email;
+      $password = $request->password;
+      
+      try {
+          $user = DB::select('SELECT * FROM PERSON p WHERE p.email=? AND p.password=?', [$email, $password]);
+          dd($user);
+      } catch (\Illuminate\Database\QueryException $e) {
+          return var_dump($e);
+      }
+    }
+
     public function logout(Request $request) {
     	$request->session()->forget('email');
     	return Redirect::to('/welcome');

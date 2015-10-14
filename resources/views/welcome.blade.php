@@ -14,7 +14,7 @@
                 <h1>RideShare</h2>
                 <p class="slogan">Share your rides &middot; Save some cash &middot; Make new friends</p>
                 <div class="form-wrapper">
-                    {!! Form::open(['url' => '/']) !!}
+                    {!! Form::open(['url' => '/login']) !!}
                         {!! Form::email('email', null, ['placeholder' => 'email']) !!}
                         {!! Form::password('password', ['placeholder' => 'password']) !!}
                         {!! Form::submit('login') !!}
