@@ -1,16 +1,16 @@
-CREATE TABLE Car(
-  carPlateNo VARCHAR(10) PRIMARY KEY,
-  carModel VARCHAR(100),
-  numSeats INT
-);
-
-CREATE TABLE Owns(
-  ownerCarPlateNo VARCHAR(10),
+CREATE TABLE Owns_Car(
+  carPlateNo VARCHAR(10) NOT NULL UNIQUE,
+  carModel VARCHAR(100) NOT NULL,
+  ownerLicenseNo VARCHAR(10) NOT NULL UNIQUE,
   ownerEmail VARCHAR(256),
-  ownerLicenseNo VARCHAR(10),
-  PRIMARY KEY (ownerCarPlateNo, ownerEmail),
-  FOREIGN KEY (ownerCarPlateNo) REFERENCES Car(carPlateNo),
-  FOREIGN KEY (ownerEmail) REFERENCES Person(email)
+  numSeats INT NOT NULL,
+  
+  PRIMARY KEY (carPlateNo, ownerEmail),
+  
+  FOREIGN KEY (ownerEmail) 
+    REFERENCES Person(email) 
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 );
 
 CREATE TABLE Person(
@@ -18,48 +18,101 @@ CREATE TABLE Person(
   name VARCHAR(255) NOT NULL,
   balance INT DEFAULT 0,
   age INT,
-  gender VARCHAR(6) NOT NULL,
+  gender VARCHAR(6),
   avatar VARCHAR(255),
   password VARCHAR(255),
-  CONSTRAINT allowedGender CHECK (gender IN ('MALE', 'FEMALE')),
-  CONSTRAINT ageRestriction CHECK (age >= 18),
-  CONSTRAINT minBalance CHECK (balance >= 0),
-  CONSTRAINT minLengthPassword CHECK (length(password) >= 6)
+  isAdmin VARCHAR(5) DEFAULT 'FALSE',
+
+  CONSTRAINT validBalance CHECK (balance >= 0),
+  CONSTRAINT validDrivingAge CHECK (age >= 18),
+  CONSTRAINT validGender CHECK (gender IN ('MALE', 'FEMALE')),
+  CONSTRAINT validPassword CHECK (length(password) >= 6),
+  CONSTRAINT isPersonAdmin CHECK (isAdmin IN ('TRUE', 'FALSE'))
 );
 
-CREATE TABLE Profile(
-  token CLOB NOT NULL,
-  userID VARCHAR(17),
-  email VARCHAR(255),
+CREATE TABLE Has_Profile(
+  token CLOB NOT NULL UNIQUE,
+  userID VARCHAR(17) NOT NULL UNIQUE,
+  email VARCHAR(256),
+  
   PRIMARY KEY(userId, email),
-  FOREIGN KEY (email) REFERENCES Person(email) ON DELETE CASCADE
+  
+  FOREIGN KEY (email) 
+    REFERENCES Person(email) 
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 );
 
-CREATE TABLE Ride_Driver(
-  departDate DATE,
-  departTime TIMESTAMP WITH LOCAL TIME ZONE,  
-  departLocation VARCHAR(256),
-  destination VARCHAR(256),
+CREATE TABLE Driver_Ride(
+  departDateTime TIMESTAMP WITH LOCAL TIME ZONE,
+  departLocation VARCHAR(256) NOT NULL,
+  destination VARCHAR(256) NOT NULL,
   driverEmail VARCHAR(256),
-  collected VARCHAR(5) CHECK (collected = 'TRUE' OR collected = 'FALSE'),
-  price INT,
+  pricePerSeat INT,
   numSeats INT,
-  PRIMARY KEY (departDate, departTime, driverEmail),
-  FOREIGN KEY (driverEmail) REFERENCES Person(email)
+  isCancelled VARCHAR(5) DEFAULT 'FALSE', 
+  isEnded VARCHAR(5) DEFAULT 'FALSE', 
+  isStarted VARCHAR(5) DEFAULT 'FALSE', 
+    
+  CONSTRAINT isRideCancelled CHECK (isCancelled IN ('TRUE', 'FALSE')),
+  CONSTRAINT isRideEnded CHECK (isEnded IN ('TRUE', 'FALSE')),
+  CONSTRAINT isRideStarted CHECK (isStarted IN ('TRUE', 'FALSE')),
+  CONSTRAINT validCancel CHECK (NOT(isCancelled = 'TRUE' AND isStarted = 'TRUE')),
+  CONSTRAINT validPrice CHECK (price >= 0),
+  CONSTRAINT validCapacity CHECK (
+    numSeats <= (
+      SELECT c.numSeats
+      FROM Owns_Car c
+      WHERE c.ownerEmail = driverEmail
+    )
+  ),
+  CONSTRAINT validTiming CHECK (
+    NOT EXISTS (
+      SELECT *
+      FROM Driver_Ride r
+      WHERE r.driverEmail = driverEmail
+      AND r.departTime <= departDateTime+1  -- need to figure out proper syntax
+      AND r.departTime >= departDateTime-1
+    )
+  ),
+  
+  PRIMARY KEY (departDateTime, driverEmail),
+  
+  FOREIGN KEY (driverEmail) 
+    REFERENCES Person(email) 
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 );
 
 CREATE TABLE Passenger(
-  paid VARCHAR(5) CHECK (paid = 'TRUE' OR paid = 'FALSE'),
   passengerEmail VARCHAR(256),
-  rideDepartDate DATE,
-  rideDepartTime TIMESTAMP WITH LOCAL TIME ZONE,
+  rideDepartDateTime TIMESTAMP WITH LOCAL TIME ZONE,
   rideDriverEmail VARCHAR(256),
-  PRIMARY KEY(passengerEmail, rideDepartDate, rideDepartTime, rideDriverEmail),
-  FOREIGN KEY(passengerEmail) REFERENCES Person(email),
-  FOREIGN KEY(rideDepartDate, rideDepartTime, rideDriverEmail) REFERENCES Ride_Driver(departDate, departTime, driverEmail)
+
+  CONSTRAINT hasEnoughCredit CHECK (
+    EXISTS (
+      SELECT *
+      FROM Driver_Ride r, Person p
+      WHERE p.balance >= r.pricePerSeat
+      AND p.email = passengerEmail
+      AND r.departTime = rideDepartDateTime
+      AND r.driverEmail = rideDriverEmail
+    )
+  ),
+  
+  PRIMARY KEY(passengerEmail, rideDepartDateTime, rideDriverEmail),
+  
+  FOREIGN KEY(passengerEmail) 
+    REFERENCES Person(email) 
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  FOREIGN KEY(rideDepartDateTime, rideDriverEmail) 
+    REFERENCES Ride_Driver(departDateTime, driverEmail) 
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 );
 
-INSERT INTO Car ('SA33Z','BMWi5');
-INSERT INTO Car ('SDE1510L','Toyota Corolla');
-INSERT INTO Car ('SGA6993D','Mercedes C150');
-INSERT INTO Car ('SBR527C','Volkswagon Golf');
+-- INSERT INTO Car ('SA33Z','BMWi5');
+-- INSERT INTO Car ('SDE1510L','Toyota Corolla');
+-- INSERT INTO Car ('SGA6993D','Mercedes C150');
+-- INSERT INTO Car ('SBR527C','Volkswagon Golf');

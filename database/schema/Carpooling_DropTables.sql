@@ -1,6 +1,5 @@
-drop table Owner;
-drop table Passenger;
-drop table Car;
+drop table Owns_Car;
 drop table Person;
-drop table Ride_Driver;
- 
+drop table Has_Profile;
+drop table Driver_Ride;
+drop table Passenger;
