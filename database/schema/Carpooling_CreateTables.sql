@@ -1,6 +1,6 @@
 CREATE TABLE Owns_Car(
   carPlateNo VARCHAR(10) NOT NULL UNIQUE,
-  carModel VARCHAR(100) NOT NULL,
+  carModel VARCHAR(256) NOT NULL,
   ownerLicenseNo VARCHAR(10) NOT NULL UNIQUE,
   ownerEmail VARCHAR(256),
   numSeats INT NOT NULL,
@@ -14,13 +14,13 @@ CREATE TABLE Owns_Car(
 );
 
 CREATE TABLE Person(
-  email VARCHAR(255) PRIMARY KEY,
-  name VARCHAR(255) NOT NULL,
+  email VARCHAR(256) PRIMARY KEY,
+  name VARCHAR(256) NOT NULL,
   balance INT DEFAULT 0,
   age INT,
   gender VARCHAR(6),
-  avatar VARCHAR(255),
-  password VARCHAR(255),
+  avatar VARCHAR(256),
+  password VARCHAR(256),
   isAdmin VARCHAR(5) DEFAULT 'FALSE',
 
   CONSTRAINT validBalance CHECK (balance >= 0),
