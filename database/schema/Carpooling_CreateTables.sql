@@ -71,8 +71,8 @@ CREATE TABLE Driver_Ride(
       SELECT *
       FROM Driver_Ride r
       WHERE r.driverEmail = driverEmail
-      AND r.departTime <= departDateTime+1  -- need to figure out proper syntax
-      AND r.departTime >= departDateTime-1
+      AND r.departDateTime <= departDateTime+1  -- need to figure out proper syntax
+      AND r.departDateTime >= departDateTime-1
     )
   ),
   
@@ -95,8 +95,18 @@ CREATE TABLE Passenger(
       FROM Driver_Ride r, Person p
       WHERE p.balance >= r.pricePerSeat
       AND p.email = passengerEmail
-      AND r.departTime = rideDepartDateTime
+      AND r.departDateTime = rideDepartDateTime
       AND r.driverEmail = rideDriverEmail
+    )
+  ),
+  CONSTRAINT noOwnRideSignUp CHECK (passengerEmail <> rideDriverEmail),
+  CONSTRAINT isRideTooCloseToOthers CHECK (
+    NOT EXISTS (
+      SELECT *
+      FROM Passenger p
+      WHERE p.rideDepartDateTime <= rideDepartDateTime+1  -- need to figure out proper syntax
+      AND p.rideDepartDateTime >= rideDepartDateTime-1
+      AND p.passengerEmail = passengerEmail
     )
   ),
   
