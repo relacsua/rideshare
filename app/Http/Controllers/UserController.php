@@ -54,18 +54,31 @@ class UserController extends Controller
         $user_email = DB::select("SELECT p.email FROM Profile p WHERE p.userID=?", [$user->getId()]);
 
         if(!$user_email) {
-        	DB::insert("INSERT INTO Person (email, name, gender, avatar) VALUES (?,?,?,?)", [$user->getEmail(), $user->getName(), strtoupper($user->user['gender']), $user->avatar_original]);
-        	DB::insert("INSERT INTO Profile (token, userID, email) VALUES (?,?,?)", [$user->token, $user->getID(), $user->getEmail()]);
-        	$request->session()->put('email', $user->getEmail());
-        	return Redirect::to('/profile');
+        	$request->session()->put('user', $user);
+        	return Redirect::to('/profile/create');
         } else {
 					$request->session()->put('email', $user_email);
 					return Redirect::to('/');
         }
     }
 
-    public function editProfile(Request $request) {
-    	return view('profile.edit', ['email' => $request->session()->get('email')]);
+    public function createProfile(Request $request) {
+    	$user = $request->session()->get('user');
+    	// $request->session()->forget('user');
+
+    	$user_details = array(
+    		'email' => $user->getEmail(),
+    		'name' => $user->getName(),
+    		'gender' => strtoupper($user->user['gender']),
+    		'avatar' => $user->avatar_original
+    	);
+    	
+    	return view('profile.create', ['user' => $user_details]);
+    }
+
+    public function storeProfile(Request $request) {
+			DB::insert("INSERT INTO Person (email, name, gender, avatar) VALUES (?,?,?,?)", [$user->getEmail(), $user->getName(), strtoupper($user->user['gender']), $user->avatar_original]);
+      DB::insert("INSERT INTO Profile (token, userID, email) VALUES (?,?,?)", [$user->token, $user->getID(), $user->getEmail()]);
     }
 
     public function login(Requests\LoginRequest $request) {
@@ -73,8 +86,8 @@ class UserController extends Controller
       $password = $request->password;
       
       try {
-          $user = DB::select('SELECT * FROM PERSON p WHERE p.email=? AND p.password=?', [$email, $password]);
-          dd($user);
+          // $user = DB::select('SELECT * FROM PERSON p WHERE p.email=? AND p.password=?', [$email, $password]);
+          dd('hello worked');
       } catch (\Illuminate\Database\QueryException $e) {
           return var_dump($e);
       }

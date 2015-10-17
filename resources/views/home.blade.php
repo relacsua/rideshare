@@ -11,6 +11,7 @@
         <div>HEADER</div>
         <p>welcome to home page</p>
         <a href="/profile">Profile</a>
+        <hr />
         <a href="/logout">Logout</a>
         <div>footer</div>
     </body>
