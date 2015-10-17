@@ -6,7 +6,7 @@ CREATE TABLE Owns_Car(
   numSeats INT NOT NULL,
   
   PRIMARY KEY (carPlateNo, ownerEmail),
-  
+  CONSTRAINT validNumSeats CHECK (numSeats > 0),
   FOREIGN KEY (ownerEmail) 
     REFERENCES Person(email) 
     ON DELETE CASCADE
