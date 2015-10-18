@@ -21,6 +21,7 @@ Route::get('/', ['uses' => 'UserController@home']);
  * Profile routes 
  *************************/
 Route::get('/profiles/new', ['uses' => 'ProfileController@create']);
+Route::get('/profiles/{email}', ['uses' => 'ProfileController@show']);
 Route::post('/profiles', ['uses' => 'ProfileController@store']);
 
 /* 
@@ -34,10 +35,3 @@ Route::get('/login/facebook/callback', ['uses' => 'UserController@handleFacebook
  *************************/
 Route::post('/login', ['uses' => 'UserController@login']);
 Route::get('/logout', ['uses' => 'UserController@logout']);
-
-
-/* 
- * Sample routes
- *************************/
-Route::get('/students/{name}', ['uses' => 'SampleController@index']);
-Route::get('sample', ['uses' => 'SampleController@sample']);

@@ -77,6 +77,8 @@ class ProfileController extends Controller
             
             DB::insert("INSERT INTO Owns_Car (carPlateNo, carModel, ownerLicenseNo, ownerEmail, numSeats) VALUES (?,?,?,?,?)", [$carPlateNo, $carModel, $licenceNo, $email, $numSeats]);
         }
+
+        return Redirect::to('/');
     }
 
     /**
@@ -85,9 +87,13 @@ class ProfileController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function show($id)
+    public function show($email)
     {
-        //
+        $person = DB::select('SELECT * FROM Person p WHERE p.email=?', [$email]);
+        $car = DB::select('SELECT * FROM Owns_Car c WHERE c.ownerEmail=?', [$email]);
+        $profile = DB::select('SELECT * FROM Has_Profile p WHERE p.email=?', [$email]);
+
+        return view('profile', ['person' => $person, 'car' => $car, 'profile' => $profile, 'name' => $person[0]->name, 'avatar' => $person[0]->avatar, 'email' => $person[0]->email]);
     }
 
     /**

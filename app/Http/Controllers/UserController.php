@@ -40,8 +40,8 @@ class UserController extends Controller
     		return Redirect::to('/welcome');
     	} else {
     		$user = DB::select('SELECT * FROM PERSON p WHERE p.email=?', [$email]);
-    		$user_info = array('name' => $user[0]->name, 'avatar' => $user[0]->avatar);
-    		return view('home', $user_info);
+    		$user_info = array('name' => $user[0]->name, 'avatar' => $user[0]->avatar, 'email' => $user[0]->email);
+    		return view('dashboard', $user_info);
     	}
 
     }

@@ -4,9 +4,8 @@
         <meta charset="utf-8">
         <title>RideShare | Share your rides</title>
         <link href="https://fonts.googleapis.com/css?family=Lato:300" rel="stylesheet" type="text/css">
-        <link href='https://fonts.googleapis.com/css?family=Raleway:100,300,600' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Raleway:100,300,500,600,700' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" type="text/css" href="{{ asset('/vendor/bootstrap/dist/css/bootstrap.min.css') }}">
-        <link rel="stylesheet" type="text/css" href="{{ asset('/css/common.css') }}">
         <link rel="stylesheet" type="text/css" href="{{ asset('/css/home.css') }}">
         <link rel="stylesheet" type="text/css" href="{{ asset('/css/sidebar.css') }}">
     </head>
@@ -20,7 +19,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="#">
+                    <a class="navbar-brand" id="menu-toggle" href="#">
                         <img id="icon" src="{{ asset('/img/rideshare.png') }}" />
                         <span id="brand-name">RideShare</span>
                     </a>
@@ -36,7 +35,6 @@
                                 <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a href="/profile">Profile</a></li>
                                 <li><a href="/logout">logout</a></li>
                             </ul>
                         </li>
@@ -44,7 +42,41 @@
                 </div>
             </div>
         </nav>
+        <div id="wrapper">
+
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <div class="navbar-brand">
+                <img id="icon" src="{{ asset('/img/rideshare.png') }}" />
+                <span id="brand-name">RideShare</span>
+            </div>
+            <ul class="sidebar-nav">
+                <li>
+                    <span class="sub-menu-title">Personal</span>
+                </li>
+                <li class="{{ Request::is( '/') ? 'active' : '' }}">
+                    <a href="/">Dashboard</a>
+                </li>
+                <li class="{{ Request::segment(1) == 'profiles' ? 'active' : '' }}">
+                    <a href="{{'/profiles/'.$email}}">Profile</a>
+                </li>
+            </ul>
+        </div>
+        <!-- /#sidebar-wrapper -->
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <div class="container-fluid">
+                @yield('content')
+            </div>
+        </div>
         <script type="text/javascript" src="{{ asset('/vendor/jquery/dist/jquery.min.js') }}"></script>
         <script type="text/javascript" src="{{ asset('/vendor/bootstrap/dist/js/bootstrap.min.js') }}"></script>
+        <script type="text/javascript">
+            $("#menu-toggle").click(function(e) {
+                e.preventDefault();
+                $("#wrapper").toggleClass("toggled");
+            });
+        </script>
     </body>
 </html>
