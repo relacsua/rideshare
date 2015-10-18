@@ -7,38 +7,24 @@
 				<span class="glyphicon glyphicon-user" aria-hidden="true"></span>
 				<span>Profile</span>
 			</h1>
-			
-			<h3>Driver Details</h3>
-			<table class="table table-bordered">
-				<thead>
-					<tr>
-						@foreach ($car[0] as $key => $value)
-							<th>{{ $key }}</th>
-						@endforeach	
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						@foreach ($car[0] as $key => $value)
-							<td>{{ $value }}</td>
-						@endforeach	
-					</tr>
-				</tbody>
-			</table>
 
 			<h3>Person Details</h3>
 			<table class="table table-bordered">
 				<thead>
 					<tr>
 						@foreach ($person[0] as $key => $value)
-							<th>{{ $key }}</th>
+							@if (!in_array($key, ['password', 'isadmin']))
+								<th>{{ $key }}</th>
+							@endif
 						@endforeach	
 					</tr>
 				</thead>
 				<tbody>
 					<tr>
 						@foreach ($person[0] as $key => $value)
-							<td>{{ $value }}</td>
+							@if (!in_array($key, ['password', 'isadmin']))
+								<td>{{ $value }}</td>
+							@endif
 						@endforeach	
 					</tr>
 				</tbody>
@@ -49,14 +35,40 @@
 				<thead>
 					<tr>
 						@foreach ($profile[0] as $key => $value)
-							<th>{{ $key }}</th>
+							@if (!in_array($key, ['email', 'token']))
+								<th>{{ $key }}</th>
+							@endif
 						@endforeach	
 					</tr>
 				</thead>
 				<tbody>
 					<tr>
 						@foreach ($profile[0] as $key => $value)
-							<td>{{ $value }}</td>
+							@if (!in_array($key, ['email', 'token']))
+								<td>{{ $value }}</td>
+							@endif
+						@endforeach	
+					</tr>
+				</tbody>
+			</table>
+
+			<h3>Driver Details</h3>
+			<table class="table table-bordered">
+				<thead>
+					<tr>
+						@foreach ($car[0] as $key => $value)
+							@if (!in_array($key, ['owneremail']))
+								<th>{{ $key }}</th>
+							@endif
+						@endforeach	
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						@foreach ($car[0] as $key => $value)
+							@if (!in_array($key, ['owneremail']))
+								<td>{{ $value }}</td>
+							@endif
 						@endforeach	
 					</tr>
 				</tbody>
