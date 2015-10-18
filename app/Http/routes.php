@@ -12,22 +12,32 @@
 */
 
 /*
-* S
-*/
+ * Rendering static pages
+ *************************/
 Route::get('/welcome', ['uses' => 'UserController@welcome']);
 Route::get('/', ['uses' => 'UserController@home']);
 
 /* 
-* Profile routes 
-*************************/
-Route::get('/profiles/new', ['uses' => 'UserController@newProfile']);
-Route::post('/profiles', ['uses' => 'UserController@createProfile']);
+ * Profile routes 
+ *************************/
+Route::get('/profiles/new', ['uses' => 'ProfileController@create']);
+Route::post('/profiles', ['uses' => 'ProfileController@store']);
 
-//
+/* 
+ * Facebook routes 
+ *************************/
 Route::get('/login/facebook', ['uses' => 'UserController@redirectToFacebook']);
 Route::get('/login/facebook/callback', ['uses' => 'UserController@handleFacebookCallback']);
+
+/* 
+ * Session routes
+ *************************/
 Route::post('/login', ['uses' => 'UserController@login']);
 Route::get('/logout', ['uses' => 'UserController@logout']);
 
+
+/* 
+ * Sample routes
+ *************************/
 Route::get('/students/{name}', ['uses' => 'SampleController@index']);
 Route::get('sample', ['uses' => 'SampleController@sample']);

@@ -1,17 +1,3 @@
-CREATE TABLE Owns_Car(
-  carPlateNo VARCHAR(10) NOT NULL UNIQUE,
-  carModel VARCHAR(256) NOT NULL,
-  ownerLicenseNo CHAR(9) NOT NULL UNIQUE,
-  ownerEmail VARCHAR(256),
-  numSeats INT NOT NULL,
-  
-  PRIMARY KEY (carPlateNo, ownerEmail),
-  CONSTRAINT validNumSeats CHECK (numSeats > 0),
-  FOREIGN KEY (ownerEmail) 
-    REFERENCES Person(email) 
-    ON DELETE CASCADE
-);
-
 CREATE TABLE Person(
   email VARCHAR(256) PRIMARY KEY,
   name VARCHAR(256) NOT NULL,
@@ -26,6 +12,20 @@ CREATE TABLE Person(
   CONSTRAINT validDrivingAge CHECK (age >= 18),
   CONSTRAINT validGender CHECK (gender IN ('MALE', 'FEMALE')),
   CONSTRAINT isPersonAdmin CHECK (isAdmin IN ('TRUE', 'FALSE'))
+);
+
+CREATE TABLE Owns_Car(
+  carPlateNo VARCHAR(10) NOT NULL UNIQUE,
+  carModel VARCHAR(256) NOT NULL,
+  ownerLicenseNo CHAR(9) NOT NULL UNIQUE,
+  ownerEmail VARCHAR(256),
+  numSeats INT NOT NULL,
+  
+  PRIMARY KEY (carPlateNo, ownerEmail),
+  CONSTRAINT validNumSeats CHECK (numSeats > 0),
+  FOREIGN KEY (ownerEmail) 
+    REFERENCES Person(email) 
+    ON DELETE CASCADE
 );
 
 CREATE TABLE Has_Profile(
