@@ -71,7 +71,8 @@ class UserController extends Controller
           $user = DB::select('SELECT p.password FROM PERSON p WHERE p.email=?', [$email]);
           
           if(empty($user)) {
-          	return Redirect::to('/welcome')->with('error', 'Invalid email address/password');
+          	$errors = array('Invalid email address/password');
+          	return Redirect::to('/welcome')->with('errors', $errors);
           } else {
 						$hashed_password = $user[0]->password;
 						if(Hash::check($password, $hashed_password)) {

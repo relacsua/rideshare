@@ -8,6 +8,13 @@
         <link rel="stylesheet" type="text/css" href="{{ asset('/css/welcome.css') }}">
     </head>
     <body>
+        
+        @if (is_object($errors) && $errors->any())
+            @include('errors._alertbar', ['errors' => $errors->all()])
+        @elseif (is_array($errors) && count($errors) > 0)
+            @include('errors._alertbar', ['errors' => $errors])
+        @endif
+
         <div class="container">
             <div class="content">
                 <img class='icon' src="{{ asset('/img/rideshare.png') }}" />
@@ -19,15 +26,6 @@
                         {!! Form::password('password', ['placeholder' => 'password']) !!}
                         {!! Form::submit('login') !!}
                     {!! Form::close() !!}
-
-                    @if ($errors->any())
-                        <p><span style="color: red;">{{ count($errors->all()) }}</span> errors found.</p>
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    @endif
                     <hr />
                     <a href='/login/facebook' class='fb-btn'>Register via facebook</a>
                 </div>
