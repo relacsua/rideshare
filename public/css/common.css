@@ -1,0 +1,78 @@
+body {
+    background-color: #fffad5;
+    font-family: 'Raleway';
+    font-weight: 100;
+}
+.navbar-brand #icon {
+    width: 30px;
+    display: inline-block;
+}
+.navbar-brand #brand-name {
+    display: inline-block;
+    font-family: 'lato';
+    font-weight: 300;
+    color: #000;
+    padding-left: 5px;
+}
+
+.dropdown-toggle {
+    display: table !important;
+}
+
+.navbar-default {
+    background-color: #ffd34e;
+    border: 0;
+    border-radius: 0;
+    color: #000;
+}
+
+.navbar-default .navbar-nav>.open>a, .navbar-default .navbar-nav>.open>a:focus, .navbar-default .navbar-nav>.open>a:hover {
+    background-color: #ffd34e;
+    opacity: 0.8;
+    color: #000;
+}
+
+.rideshare-btn, .rideshare-btn:hover {
+    background-color: #db9e36;
+    border: 0;
+    border-radius: 0;
+    color: #ffffff;
+}
+
+.profile-img-container {
+    width: 30px;
+    height: 30px;
+    overflow: hidden;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.profile-img-container .profile-img {
+    width: 30px;
+    height: auto;
+}
+
+.profile-name {
+    padding: 0 10px;
+    display: table-cell;
+    vertical-align: middle;
+    font-weight: 600;
+    color: #000;
+}
+
+.caret {
+    display: inline;
+    color: #000;
+}
+
+.dropdown-menu {
+    background-color: #ffd34e;
+    border-top: 0;
+}
+
+.dropdown-menu>li>a:focus,
+.dropdown-menu>li>a:hover {
+    text-decoration: none;
+    font-weight: 300;
+    background-color: #fffad5;
+}

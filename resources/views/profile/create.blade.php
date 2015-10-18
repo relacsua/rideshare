@@ -6,55 +6,8 @@
         <link href="https://fonts.googleapis.com/css?family=Lato:300" rel="stylesheet" type="text/css">
         <link href='https://fonts.googleapis.com/css?family=Raleway:100,600' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" type="text/css" href="{{ asset('/vendor/bootstrap/dist/css/bootstrap.min.css') }}">
-        <style type="text/css">
-            body {
-                background-color: #fffad5;
-                font-family: 'Raleway';
-                font-weight: 100;
-            }
-            .navbar-brand #icon {
-                width: 25px;
-                display: inline-block;
-            }
-            .navbar-brand #brand-name {
-                display: inline-block;
-                font-family: 'lato';
-                color: #000;
-                padding-left: 5px;
-            }
-            .navbar-default {
-                background-color: #ffd34e;
-                border: 0;
-                border-radius: 0;
-            }
-            form {
-                margin-top: 25px;
-            }
-            .form-header {
-                font-size: 20px;
-                font-weight: 600;
-                border-bottom: 1px solid #DACD2F;
-                padding-bottom: 15px;
-                margin: 15px 0;
-            }
-            .form-control {
-                border-radius: 0;
-            }
-            .driver-form {
-                display: none;
-            }
-            .btn.btn-default {
-                margin-top: 50px;
-                float: right;
-            }
-            .rideshare-btn, .rideshare-btn:hover {
-                background-color: #db9e36;
-                border: 0;
-                border-radius: 0;
-                color: #ffffff;
-            }
-        </style>
-    </head>
+        <link rel="stylesheet" type="text/css" href="{{ asset('/css/new_profile.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('/css/common.css') }}">
     <body>
         <nav class="navbar navbar-default">
             <div class="container-fluid">
@@ -114,6 +67,8 @@
 
                         {{-- End of Person form --}}
 
+                        {{-- Start of Profile form --}}
+
                         <div class="profile-form">
                             <p class="form-header">Profile details</p>
                             <div class="form-group">
@@ -125,6 +80,8 @@
                                 {!! Form::textarea('token', null, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
                             </div>
                         </div>
+
+                        {{-- End of Profile form --}}
                         
                         {{-- Start of Driver form --}}
 
@@ -184,7 +141,6 @@
             }
         </script>
         <script type="text/javascript">
-            
             if($('#isDriver').prop('checked')) {
                 $('.driver-form').show();
             } else {
@@ -193,7 +149,7 @@
 
             $('#isDriver').on('click', function () {
                 $('.driver-form').slideToggle();
-            })
+            });
         </script>
     </body>
 </html>

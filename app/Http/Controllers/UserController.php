@@ -34,12 +34,14 @@ class UserController extends Controller
 
     public function home(Request $request)
     {
-    	$user = Session::get('email');
-    	
-    	if(!$user) {
+    	$email = Session::get('email');
+
+    	if(!$email) {
     		return Redirect::to('/welcome');
     	} else {
-    		return view('home');
+    		$user = DB::select('SELECT * FROM PERSON p WHERE p.email=?', [$email]);
+    		$user_info = array('name' => $user[0]->name, 'avatar' => $user[0]->avatar);
+    		return view('home', $user_info);
     	}
 
     }
