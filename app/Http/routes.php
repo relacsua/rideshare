@@ -11,11 +11,19 @@
 |
 */
 
+/*
+* S
+*/
 Route::get('/welcome', ['uses' => 'UserController@welcome']);
 Route::get('/', ['uses' => 'UserController@home']);
-Route::get('/profile/create', ['uses' => 'UserController@createProfile']);
-// Route::post('/', ['uses' => 'UserController@store']);
 
+/* 
+* Profile routes 
+*************************/
+Route::get('/profiles/new', ['uses' => 'UserController@newProfile']);
+Route::post('/profiles', ['uses' => 'UserController@createProfile']);
+
+//
 Route::get('/login/facebook', ['uses' => 'UserController@redirectToFacebook']);
 Route::get('/login/facebook/callback', ['uses' => 'UserController@handleFacebookCallback']);
 Route::post('/login', ['uses' => 'UserController@login']);

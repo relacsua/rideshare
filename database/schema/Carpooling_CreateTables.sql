@@ -1,7 +1,7 @@
 CREATE TABLE Owns_Car(
   carPlateNo VARCHAR(10) NOT NULL UNIQUE,
   carModel VARCHAR(256) NOT NULL,
-  ownerLicenseNo VARCHAR(10) NOT NULL UNIQUE,
+  ownerLicenseNo CHAR(9) NOT NULL UNIQUE,
   ownerEmail VARCHAR(256),
   numSeats INT NOT NULL,
   
@@ -10,7 +10,6 @@ CREATE TABLE Owns_Car(
   FOREIGN KEY (ownerEmail) 
     REFERENCES Person(email) 
     ON DELETE CASCADE
-    ON UPDATE CASCADE
 );
 
 CREATE TABLE Person(
@@ -20,18 +19,17 @@ CREATE TABLE Person(
   age INT,
   gender VARCHAR(6),
   avatar VARCHAR(256),
-  password VARCHAR(256),
+  password CHAR(60),
   isAdmin VARCHAR(5) DEFAULT 'FALSE',
 
   CONSTRAINT validBalance CHECK (balance >= 0),
   CONSTRAINT validDrivingAge CHECK (age >= 18),
   CONSTRAINT validGender CHECK (gender IN ('MALE', 'FEMALE')),
-  CONSTRAINT validPassword CHECK (length(password) >= 6),
   CONSTRAINT isPersonAdmin CHECK (isAdmin IN ('TRUE', 'FALSE'))
 );
 
 CREATE TABLE Has_Profile(
-  token CLOB NOT NULL UNIQUE,
+  token CLOB NOT NULL,
   userID VARCHAR(17) NOT NULL UNIQUE,
   email VARCHAR(256),
   
@@ -40,7 +38,6 @@ CREATE TABLE Has_Profile(
   FOREIGN KEY (email) 
     REFERENCES Person(email) 
     ON DELETE CASCADE
-    ON UPDATE CASCADE
 );
 
 CREATE TABLE Driver_Ride(
@@ -81,7 +78,6 @@ CREATE TABLE Driver_Ride(
   FOREIGN KEY (driverEmail) 
     REFERENCES Person(email) 
     ON DELETE CASCADE
-    ON UPDATE CASCADE
 );
 
 CREATE TABLE Passenger(
@@ -114,12 +110,10 @@ CREATE TABLE Passenger(
   
   FOREIGN KEY(passengerEmail) 
     REFERENCES Person(email) 
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
+    ON DELETE CASCADE,
   FOREIGN KEY(rideDepartDateTime, rideDriverEmail) 
     REFERENCES Ride_Driver(departDateTime, driverEmail) 
     ON DELETE CASCADE
-    ON UPDATE CASCADE
 );
 
 -- INSERT INTO Car ('SA33Z','BMWi5');
