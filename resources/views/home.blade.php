@@ -15,7 +15,7 @@
         @elseif (is_array($errors) && count($errors) > 0)
             @include('errors._alertbar', ['errors' => $errors])
         @endif
-        <nav class="navbar navbar-default">
+        <nav class="navbar navbar-default navbar-fixed-top">
             <div class="container-fluid">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
@@ -51,10 +51,6 @@
 
         <!-- Sidebar -->
         <div id="sidebar-wrapper">
-            <div class="navbar-brand">
-                <img id="icon" src="{{ asset('/img/rideshare.png') }}" />
-                <span id="brand-name">RideShare</span>
-            </div>
             <ul class="sidebar-nav">
                 <li>
                     <span class="sub-menu-title">Personal</span>
@@ -70,10 +66,10 @@
                     <span class="sub-menu-title">Admin</span>
                 </li>
                 <li class="{{ Request::segment(1) == 'persons' ? 'active' : '' }}">
-                    <a href="/profiles">Persons</a>
+                    <a href="/persons">Persons</a>
                 </li>
                 <li class="{{ Request::segment(1) == 'profiles' ? 'active' : '' }}">
-                    <a href="/persons">Profiles</a>
+                    <a href="/profiles">Profiles</a>
                 </li>
                 <li class="{{ Request::segment(1) == 'cars' ? 'active' : '' }}">
                     <a href="/cars">Cars</a>

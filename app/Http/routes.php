@@ -30,9 +30,11 @@ Route::post('/accounts', ['uses' => 'AccountController@store']);
 /* 
  * Profile routes 
  *************************/
-Route::get('/profiles/new', ['uses' => 'ProfileController@create']);
-Route::get('/profiles/{email}', ['uses' => 'ProfileController@show']);
-Route::post('/profiles', ['uses' => 'ProfileController@store']);
+Route::group(['middleware' => 'admin'], function()
+{
+    // Route::resource('todo', 'TodoController', ['only' => ['index']]);
+    Route::resource('persons', 'PersonController');
+});
 
 /* 
  * Facebook routes 

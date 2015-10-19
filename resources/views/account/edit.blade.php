@@ -107,7 +107,7 @@
 
 			            {{-- End of Driver form --}}
 
-			            {!! Form::submit('Edit Profile', ['class' => 'btn btn-default rideshare-btn']) !!}
+			            {!! Form::submit('Update Profile', ['class' => 'btn btn-default rideshare-btn']) !!}
 			        {!! Form::close() !!}
 			    </div>
 			</div>
