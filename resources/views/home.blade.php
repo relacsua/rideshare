@@ -57,8 +57,8 @@
                 <li class="{{ Request::is( '/') ? 'active' : '' }}">
                     <a href="/">Dashboard</a>
                 </li>
-                <li class="{{ Request::segment(1) == 'profiles' ? 'active' : '' }}">
-                    <a href="{{'/profiles/'.$email}}">Profile</a>
+                <li class="{{ Request::segment(1) == 'me' ? 'active' : '' }}">
+                    <a href="/me">Profile</a>
                 </li>
             </ul>
         </div>

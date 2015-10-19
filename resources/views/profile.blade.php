@@ -52,27 +52,29 @@
 				</tbody>
 			</table>
 
-			<h3>Driver Details</h3>
-			<table class="table table-bordered">
-				<thead>
-					<tr>
-						@foreach ($car[0] as $key => $value)
-							@if (!in_array($key, ['owneremail']))
-								<th>{{ $key }}</th>
-							@endif
-						@endforeach	
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						@foreach ($car[0] as $key => $value)
-							@if (!in_array($key, ['owneremail']))
-								<td>{{ $value }}</td>
-							@endif
-						@endforeach	
-					</tr>
-				</tbody>
-			</table>
+			@if (!empty($car))
+				<h3>Driver Details</h3>
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							@foreach ($car[0] as $key => $value)
+								@if (!in_array($key, ['owneremail']))
+									<th>{{ $key }}</th>
+								@endif
+							@endforeach	
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							@foreach ($car[0] as $key => $value)
+								@if (!in_array($key, ['owneremail']))
+									<td>{{ $value }}</td>
+								@endif
+							@endforeach	
+						</tr>
+					</tbody>
+				</table>
+			@endif
 		</div>
 	</div>
 @stop

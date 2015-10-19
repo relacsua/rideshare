@@ -17,6 +17,14 @@
 Route::get('/welcome', ['uses' => 'UserController@welcome']);
 Route::get('/', ['uses' => 'UserController@home']);
 
+/*
+ * Forms and endpoints 
+ * specific to the app
+ *************************/
+Route::get('/signup', ['uses' => 'UserController@create']);
+Route::get('/me', ['uses' => 'UserController@show']);
+Route::post('/accounts', ['uses' => 'UserController@store']);
+
 /* 
  * Profile routes 
  *************************/

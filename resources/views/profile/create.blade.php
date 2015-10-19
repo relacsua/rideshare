@@ -7,7 +7,7 @@
         <link href='https://fonts.googleapis.com/css?family=Raleway:100,600' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" type="text/css" href="{{ asset('/vendor/bootstrap/dist/css/bootstrap.min.css') }}">
         <link rel="stylesheet" type="text/css" href="{{ asset('/css/new_profile.css') }}">
-        <link rel="stylesheet" type="text/css" href="{{ asset('/css/common.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('/css/home.css') }}">
     <body>
         <nav class="navbar navbar-default">
             <div class="container-fluid">
@@ -22,7 +22,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-4 col-md-offset-4 col-sm-12">
-                    {!! Form::model($user, ['url' => '/profiles']) !!}
+                    {!! Form::model($user, ['url' => '/accounts']) !!}
 
                         {{-- Start of Person form --}}
 
