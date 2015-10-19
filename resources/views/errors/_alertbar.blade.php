@@ -3,12 +3,13 @@
 	.alert {
 	  padding: 20px;
 	  background-color: #D04747;
-	  z-index: 2000;
+	  z-index: 9999;
 	  position: fixed;
 	  left: 0;
 	  right: 0;
 	  top: 0;
 	  text-align: center;
+	  border-radius: 0;
 	}
 
 	.alert span {

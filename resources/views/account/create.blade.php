@@ -146,7 +146,6 @@
             } else {
                 $('.driver-form').hide();
             }
-
             $('#isDriver').on('click', function () {
                 $('.driver-form').slideToggle();
             });

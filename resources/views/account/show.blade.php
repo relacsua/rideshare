@@ -7,6 +7,7 @@
 				<span class="glyphicon glyphicon-user" aria-hidden="true"></span>
 				<span>Profile</span>
 			</h1>
+			<a class="pull-right btn btn-default rideshare-btn" href="/me/edit">Edit Profile</a>
 
 			<h3>Person Details</h3>
 			<table class="table table-bordered">

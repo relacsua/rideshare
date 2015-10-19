@@ -21,9 +21,11 @@ Route::get('/', ['uses' => 'UserController@home']);
  * Forms and endpoints 
  * specific to the app
  *************************/
-Route::get('/signup', ['uses' => 'UserController@create']);
-Route::get('/me', ['uses' => 'UserController@show']);
-Route::post('/accounts', ['uses' => 'UserController@store']);
+Route::get('/signup', ['uses' => 'AccountController@create']);
+Route::get('/me', ['uses' => 'AccountController@show']);
+Route::get('/me/edit', ['uses' => 'AccountController@edit']);
+Route::post('/me/update', ['uses' => 'AccountController@update']);
+Route::post('/accounts', ['uses' => 'AccountController@store']);
 
 /* 
  * Profile routes 

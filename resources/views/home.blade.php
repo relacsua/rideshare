@@ -10,6 +10,11 @@
         <link rel="stylesheet" type="text/css" href="{{ asset('/css/sidebar.css') }}">
     </head>
     <body>
+        @if (is_object($errors) && $errors->any())
+            @include('errors._alertbar', ['errors' => $errors->all()])
+        @elseif (is_array($errors) && count($errors) > 0)
+            @include('errors._alertbar', ['errors' => $errors])
+        @endif
         <nav class="navbar navbar-default">
             <div class="container-fluid">
                 <div class="navbar-header">
