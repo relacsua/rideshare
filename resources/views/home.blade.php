@@ -65,6 +65,20 @@
                 <li class="{{ Request::segment(1) == 'me' ? 'active' : '' }}">
                     <a href="/me">Profile</a>
                 </li>
+                @if ($admin == 'TRUE')
+                <li>
+                    <span class="sub-menu-title">Admin</span>
+                </li>
+                <li class="{{ Request::segment(1) == 'persons' ? 'active' : '' }}">
+                    <a href="/profiles">Persons</a>
+                </li>
+                <li class="{{ Request::segment(1) == 'profiles' ? 'active' : '' }}">
+                    <a href="/persons">Profiles</a>
+                </li>
+                <li class="{{ Request::segment(1) == 'cars' ? 'active' : '' }}">
+                    <a href="/cars">Cars</a>
+                </li>
+                @endif
             </ul>
         </div>
         <!-- /#sidebar-wrapper -->

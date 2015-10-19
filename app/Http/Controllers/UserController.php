@@ -32,7 +32,7 @@ class UserController extends Controller
         
     }
 
-    public function home(Request $request)
+    public function dashboard(Request $request)
     {
     	$email = Session::get('email');
 
@@ -40,7 +40,7 @@ class UserController extends Controller
     		return Redirect::to('/welcome');
     	} else {
     		$user = DB::select('SELECT * FROM PERSON p WHERE p.email=?', [$email]);
-    		$user_info = array('name' => $user[0]->name, 'avatar' => $user[0]->avatar, 'email' => $user[0]->email);
+    		$user_info = array('name' => $user[0]->name, 'avatar' => $user[0]->avatar, 'email' => $user[0]->email, 'admin' => $user[0]->isadmin);
     		return view('dashboard', $user_info);
     	}
 

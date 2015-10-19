@@ -97,7 +97,7 @@ class AccountController extends Controller
       $car = DB::select('SELECT * FROM Owns_Car c WHERE c.ownerEmail=?', [$email]);
       $profile = DB::select('SELECT * FROM Has_Profile p WHERE p.email=?', [$email]);
 
-      return view('account.show', ['person' => $person, 'car' => $car, 'profile' => $profile, 'name' => $person[0]->name, 'avatar' => $person[0]->avatar, 'email' => $person[0]->email]);
+      return view('account.show', ['person' => $person, 'car' => $car, 'profile' => $profile, 'name' => $person[0]->name, 'avatar' => $person[0]->avatar, 'email' => $person[0]->email, 'admin' => $person[0]->isadmin]);
     }
 
     /**
@@ -131,7 +131,7 @@ class AccountController extends Controller
 	    	$user_details['numSeats'] = $car[0]->numseats;
 	    }
 
-    	return view('account.edit', ['user' => $user_details, 'name' => $person[0]->name, 'avatar' => $person[0]->avatar, 'email' => $person[0]->email]);
+    	return view('account.edit', ['user' => $user_details, 'name' => $person[0]->name, 'avatar' => $person[0]->avatar, 'email' => $person[0]->email, 'admin' => $person[0]->isadmin]);
     }
 
     /**

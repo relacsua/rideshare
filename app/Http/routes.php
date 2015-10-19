@@ -15,7 +15,7 @@
  * Rendering static pages
  *************************/
 Route::get('/welcome', ['uses' => 'UserController@welcome']);
-Route::get('/', ['uses' => 'UserController@home']);
+Route::get('/', ['uses' => 'UserController@dashboard']);
 
 /*
  * Forms and endpoints 
