@@ -28,12 +28,15 @@ Route::post('/me/update', ['uses' => 'AccountController@update']);
 Route::post('/accounts', ['uses' => 'AccountController@store']);
 
 /* 
- * Profile routes 
+ * Admin routes 
  *************************/
 Route::group(['middleware' => 'admin'], function()
 {
-    // Route::resource('todo', 'TodoController', ['only' => ['index']]);
-    Route::resource('persons', 'PersonController');
+	/* Person routes */
+	Route::resource('persons', 'PersonController', ['only' => ['index', 'show', 'edit', 'update', 'delete']]);
+  /* Profile routes */
+  Route::resource('profiles', 'ProfileController', ['only' => ['index', 'show', 'edit', 'update']]);
+  Route::delete('/profiles/{email}/{userid}', ['uses' => 'ProfileController@destroy']);
 });
 
 /* 

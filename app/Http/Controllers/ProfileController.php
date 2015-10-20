@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use Illuminate\Support\Facades\Redirect;
+
 use DB;
 use Session;
 use Request;
@@ -19,7 +21,12 @@ class ProfileController extends Controller
      */
     public function index()
     {
-        //
+        $email = Session::get('email');
+        $user = DB::select('SELECT * FROM Person p WHERE p.email=?', [$email]);
+        
+        $profiles = DB::select('SELECT * FROM has_profile');
+
+        return view('profile.index', ['profiles' => $profiles, 'name' => $user[0]->name, 'avatar' => $user[0]->avatar, 'email' => $user[0]->email, 'admin' => $user[0]->isadmin]);
     }
 
     /**
@@ -47,8 +54,14 @@ class ProfileController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function show($email)
+    public function show($id)
     {
+        $email = Session::get('email');
+        $user = DB::select('SELECT * FROM Person p WHERE p.email=?', [$email]);
+        
+        $profile = DB::select('SELECT * FROM has_profile p WHERE p.email=?', [$id]);
+
+        return view('profile.show', ['profile' => $profile, 'name' => $user[0]->name, 'avatar' => $user[0]->avatar, 'email' => $user[0]->email, 'admin' => $user[0]->isadmin]);
     }
 
     /**
@@ -59,7 +72,18 @@ class ProfileController extends Controller
      */
     public function edit($id)
     {
-        //
+        $email = Session::get('email');
+        $user = DB::select('SELECT * FROM Person p WHERE p.email=?', [$email]);
+
+        $profile = DB::select('SELECT * FROM has_profile p WHERE p.email=?', [$id]);
+        
+        $profile_details = array(
+            'email' => $profile[0]->email,
+            'userid' => $profile[0]->userid,
+            'token' => $profile[0]->token,
+        );
+
+        return view('profile.edit', ['profile' => $profile_details, 'name' => $user[0]->name, 'avatar' => $user[0]->avatar, 'email' => $user[0]->email, 'admin' => $user[0]->isadmin]);
     }
 
     /**
@@ -71,7 +95,14 @@ class ProfileController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $inputs = Request::all();
+
+        $userid = $inputs['userid'];
+        $token = $inputs['token'];
+
+        DB::update("UPDATE has_profile set token = ? WHERE email = ? AND  userid = ?", [$token, $id, $userid]);
+
+        return Redirect::to('/profiles/'.$id);
     }
 
     /**
@@ -80,8 +111,9 @@ class ProfileController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function destroy($id)
+    public function destroy($email, $id)
     {
-        //
+        DB::delete('DELETE FROM has_profile p WHERE p.email=? AND p.userid=?', [$email, $id]);
+        return Redirect::to('/persons');
     }
 }

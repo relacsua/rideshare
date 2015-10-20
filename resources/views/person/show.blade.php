@@ -5,14 +5,14 @@
 		<div class="col-lg-12">
 			<h1 class="page-title">
 				<span class="glyphicon glyphicon-user" aria-hidden="true"></span>
-				<span>{{$profile[0]->email}}</span>
+				<span>{{$person[0]->name}}</span>
 			</h1>
 		</div>
 		<table class="table table-bordered">
 			<thead>
 				<tr>
-					@foreach ($profile[0] as $key => $value)
-						@if (!in_array($key, []))
+					@foreach ($person[0] as $key => $value)
+						@if (!in_array($key, ['password']))
 							<th>{{ $key }}</th>
 						@endif
 					@endforeach
@@ -20,8 +20,8 @@
 			</thead>
 			<tbody>
 				<tr>
-					@foreach ($profile[0] as $key => $value)
-						@if (!in_array($key, []))
+					@foreach ($person[0] as $key => $value)
+						@if (!in_array($key, ['password']))
 							<td>{{ $value }}</td>
 						@endif
 					@endforeach	

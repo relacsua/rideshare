@@ -28,7 +28,7 @@ class PersonController extends Controller
 
         $persons = DB::select('SELECT * FROM Person');
         
-        return view('profile.index', ['persons' => $persons, 'name' => $person[0]->name, 'avatar' => $person[0]->avatar, 'email' => $person[0]->email, 'admin' => $person[0]->isadmin]);
+        return view('person.index', ['persons' => $persons, 'name' => $person[0]->name, 'avatar' => $person[0]->avatar, 'email' => $person[0]->email, 'admin' => $person[0]->isadmin]);
     }
 
     /**
@@ -65,7 +65,7 @@ class PersonController extends Controller
         
         $person = DB::select('SELECT * FROM Person p WHERE p.email=?', [$id]);
 
-        return view('profile.show', ['person' => $person, 'name' => $user[0]->name, 'avatar' => $user[0]->avatar, 'email' => $user[0]->email, 'admin' => $user[0]->isadmin]);
+        return view('person.show', ['person' => $person, 'name' => $user[0]->name, 'avatar' => $user[0]->avatar, 'email' => $user[0]->email, 'admin' => $user[0]->isadmin]);
     }
 
     /**
@@ -91,7 +91,7 @@ class PersonController extends Controller
             'isadmin' => $person[0]->isadmin
         );
 
-        return view('profile.edit', ['person' => $user_details, 'name' => $user[0]->name, 'avatar' => $user[0]->avatar, 'email' => $user[0]->email, 'admin' => $user[0]->isadmin]);
+        return view('person.edit', ['person' => $user_details, 'name' => $user[0]->name, 'avatar' => $user[0]->avatar, 'email' => $user[0]->email, 'admin' => $user[0]->isadmin]);
     }
 
     /**
