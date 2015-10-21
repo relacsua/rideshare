@@ -1,6 +1,12 @@
 ALTER SESSION SET NLS_TIMESTAMP_TZ_FORMAT='DD-MM-RR HH24:MI:SS';
 ALTER SESSION SET TIME_ZONE='+08:00';
 
+SET SERVEROUTPUT ON
+ 
+BEGIN
+ Dbms_Output.Put_Line(Systimestamp);
+END;
+
 CREATE TABLE Person(
   email VARCHAR(256) PRIMARY KEY,
   name VARCHAR(256) NOT NULL,
@@ -75,7 +81,7 @@ CREATE OR REPLACE TRIGGER isValidRideCapacity
   ON Driver_Ride FOR EACH ROW
 BEGIN
   DECLARE 
-     X INT := 0;
+    X INT := 0;
   BEGIN
     SELECT c.numSeats INTO X
     FROM Owns_Car c
@@ -94,7 +100,7 @@ CREATE OR REPLACE TRIGGER isValidRideTiming
   ON Driver_Ride FOR EACH ROW
 BEGIN
   DECLARE 
-     X BOOLEAN := FALSE;
+    X BOOLEAN := FALSE;
   BEGIN
     X = NOT EXISTS (
       SELECT *
@@ -136,7 +142,7 @@ CREATE OR REPLACE TRIGGER hasEnoughCredit
   ON Passenger FOR EACH ROW
 BEGIN
   DECLARE 
-     X BOOLEAN := FALSE;
+    X BOOLEAN := FALSE;
   BEGIN
     X = EXISTS (
       SELECT *
@@ -160,7 +166,7 @@ CREATE OR REPLACE TRIGGER isRideTooCloseToOthers
   ON Passenger FOR EACH ROW
 BEGIN
   DECLARE 
-     X BOOLEAN := FALSE;
+    X BOOLEAN := FALSE;
   BEGIN
     X = NOT EXISTS (
       SELECT *
