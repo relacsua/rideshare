@@ -1,3 +1,6 @@
+ALTER SESSION SET NLS_TIMESTAMP_TZ_FORMAT='DD-MM-RR HH24:MI:SS';
+ALTER SESSION SET TIME_ZONE='+08:00';
+
 CREATE TABLE Person(
   email VARCHAR(256) PRIMARY KEY,
   name VARCHAR(256) NOT NULL,
@@ -11,7 +14,8 @@ CREATE TABLE Person(
   CONSTRAINT validBalance CHECK (balance >= 0),
   CONSTRAINT validDrivingAge CHECK (age >= 18),
   CONSTRAINT validGender CHECK (gender IN ('MALE', 'FEMALE')),
-  CONSTRAINT isPersonAdmin CHECK (isAdmin IN ('TRUE', 'FALSE'))
+  CONSTRAINT isPersonAdmin CHECK (isAdmin IN ('TRUE', 'FALSE')),
+  CONSTRAINT validEmail CHECK (email LIKE '%@%')
 );
 
 CREATE TABLE Owns_Car(
@@ -56,22 +60,6 @@ CREATE TABLE Driver_Ride(
   CONSTRAINT isRideStarted CHECK (isStarted IN ('TRUE', 'FALSE')),
   CONSTRAINT validCancel CHECK (NOT(isCancelled = 'TRUE' AND isStarted = 'TRUE')),
   CONSTRAINT validPrice CHECK (price >= 0),
-  CONSTRAINT validCapacity CHECK (
-    numSeats <= (
-      SELECT c.numSeats
-      FROM Owns_Car c
-      WHERE c.ownerEmail = driverEmail
-    )
-  ),
-  CONSTRAINT validTiming CHECK (
-    NOT EXISTS (
-      SELECT *
-      FROM Driver_Ride r
-      WHERE r.driverEmail = driverEmail
-      AND r.departDateTime <= departDateTime+1  -- need to figure out proper syntax
-      AND r.departDateTime >= departDateTime-1
-    )
-  ),
   
   PRIMARY KEY (departDateTime, driverEmail),
   
@@ -80,31 +68,56 @@ CREATE TABLE Driver_Ride(
     ON DELETE CASCADE
 );
 
+CREATE OR REPLACE TRIGGER isValidRideCapacity
+  BEFORE
+    INSERT OR
+    UPDATE 
+  ON Driver_Ride FOR EACH ROW
+BEGIN
+  DECLARE 
+     X INT := 0;
+  BEGIN
+    SELECT c.numSeats INTO X
+    FROM Owns_Car c
+    WHERE c.ownerEmail = :NEW.driverEmail;
+        
+    IF :NEW.numSeats > X THEN
+      RAISE_APPLICATION_ERROR(-20001, 'Invalid Ride Capacity');
+    END IF;
+  END;
+END;
+
+CREATE OR REPLACE TRIGGER isValidRideTiming
+  BEFORE
+    INSERT OR
+    UPDATE 
+  ON Driver_Ride FOR EACH ROW
+BEGIN
+  DECLARE 
+     X BOOLEAN := FALSE;
+  BEGIN
+    X = NOT EXISTS (
+      SELECT *
+      FROM Driver_Ride r
+      WHERE r.driverEmail = :NEW.driverEmail
+      AND r.departDateTime <= :NEW.departDateTime+1  -- need to figure out proper syntax
+      AND r.departDateTime >= :NEW.departDateTime-1
+    )
+        
+    IF X = FALSE THEN
+      RAISE_APPLICATION_ERROR(-20001, 'Invalid Ride Timing');
+    END IF;
+  END;
+END;
+
+ALTER TABLE Driver_Ride ENABLE ALL TRIGGERS;
+
 CREATE TABLE Passenger(
   passengerEmail VARCHAR(256),
   rideDepartDateTime TIMESTAMP WITH LOCAL TIME ZONE,
   rideDriverEmail VARCHAR(256),
 
-  CONSTRAINT hasEnoughCredit CHECK (
-    EXISTS (
-      SELECT *
-      FROM Driver_Ride r, Person p
-      WHERE p.balance >= r.pricePerSeat
-      AND p.email = passengerEmail
-      AND r.departDateTime = rideDepartDateTime
-      AND r.driverEmail = rideDriverEmail
-    )
-  ),
   CONSTRAINT noOwnRideSignUp CHECK (passengerEmail <> rideDriverEmail),
-  CONSTRAINT isRideTooCloseToOthers CHECK (
-    NOT EXISTS (
-      SELECT *
-      FROM Passenger p
-      WHERE p.rideDepartDateTime <= rideDepartDateTime+1  -- need to figure out proper syntax
-      AND p.rideDepartDateTime >= rideDepartDateTime-1
-      AND p.passengerEmail = passengerEmail
-    )
-  ),
   
   PRIMARY KEY(passengerEmail, rideDepartDateTime, rideDriverEmail),
   
@@ -116,7 +129,51 @@ CREATE TABLE Passenger(
     ON DELETE CASCADE
 );
 
--- INSERT INTO Car ('SA33Z','BMWi5');
--- INSERT INTO Car ('SDE1510L','Toyota Corolla');
--- INSERT INTO Car ('SGA6993D','Mercedes C150');
--- INSERT INTO Car ('SBR527C','Volkswagon Golf');
+CREATE OR REPLACE TRIGGER hasEnoughCredit
+  BEFORE
+    INSERT OR
+    UPDATE 
+  ON Passenger FOR EACH ROW
+BEGIN
+  DECLARE 
+     X BOOLEAN := FALSE;
+  BEGIN
+    X = EXISTS (
+      SELECT *
+      FROM Driver_Ride r, Person p
+      WHERE p.balance >= r.pricePerSeat
+      AND p.email = :NEW.passengerEmail
+      AND r.departDateTime = :NEW.rideDepartDateTime
+      AND r.driverEmail = :NEW.rideDriverEmail
+    )
+        
+    IF X = FALSE THEN
+      RAISE_APPLICATION_ERROR(-20001, 'Not Enough Credit');
+    END IF;
+  END;
+END;
+
+CREATE OR REPLACE TRIGGER isRideTooCloseToOthers
+  BEFORE
+    INSERT OR
+    UPDATE 
+  ON Passenger FOR EACH ROW
+BEGIN
+  DECLARE 
+     X BOOLEAN := FALSE;
+  BEGIN
+    X = NOT EXISTS (
+      SELECT *
+      FROM Passenger p
+      WHERE p.rideDepartDateTime <= :NEW.rideDepartDateTime+1  -- need to figure out proper syntax
+      AND p.rideDepartDateTime >= :NEW.rideDepartDateTime-1
+      AND p.passengerEmail = :NEW.passengerEmail
+    )
+        
+    IF X = FALSE THEN
+      RAISE_APPLICATION_ERROR(-20001, 'Ride too close to others');
+    END IF;
+  END;
+END;
+
+ALTER TABLE Passenger ENABLE ALL TRIGGERS;
