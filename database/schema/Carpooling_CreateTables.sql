@@ -4,7 +4,7 @@ ALTER SESSION SET TIME_ZONE='+08:00';
 SET SERVEROUTPUT ON
  
 BEGIN
- Dbms_Output.Put_Line(Systimestamp);
+  Dbms_Output.Put_Line(Systimestamp);
 END;
 
 CREATE TABLE Person(
@@ -65,7 +65,7 @@ CREATE TABLE Driver_Ride(
   CONSTRAINT isRideEnded CHECK (isEnded IN ('TRUE', 'FALSE')),
   CONSTRAINT isRideStarted CHECK (isStarted IN ('TRUE', 'FALSE')),
   CONSTRAINT validCancel CHECK (NOT(isCancelled = 'TRUE' AND isStarted = 'TRUE')),
-  CONSTRAINT validPrice CHECK (price >= 0),
+  CONSTRAINT validPrice CHECK (pricePerSeat >= 0),
   
   PRIMARY KEY (departDateTime, driverEmail),
   
@@ -73,8 +73,8 @@ CREATE TABLE Driver_Ride(
     REFERENCES Person(email) 
     ON DELETE CASCADE
 );
-
-CREATE OR REPLACE TRIGGER isValidRideCapacity
+/
+CREATE OR REPLACE TRIGGER isValidDriverAndRideCapacity
   BEFORE
     INSERT OR
     UPDATE 
@@ -83,15 +83,27 @@ BEGIN
   DECLARE 
     X INT := 0;
   BEGIN
+    SELECT COUNT(*) INTO X
+    FROM Owns_Car c
+    WHERE c.ownerEmail = :NEW.driverEmail;
+    
+    IF X = 0 THEN
+      RAISE_APPLICATION_ERROR(-20001, 'Not a driver');
+    END IF;
+    
+    X := 0;
+    
     SELECT c.numSeats INTO X
     FROM Owns_Car c
     WHERE c.ownerEmail = :NEW.driverEmail;
         
     IF :NEW.numSeats > X THEN
-      RAISE_APPLICATION_ERROR(-20001, 'Invalid Ride Capacity');
+      RAISE_APPLICATION_ERROR(-20001, 'constraint (invalid ride capacity) violated');
     END IF;
   END;
 END;
+/
+ALTER TRIGGER isValidDriverAndRideCapacity ENABLE;
 
 CREATE OR REPLACE TRIGGER isValidRideTiming
   BEFORE
@@ -100,23 +112,29 @@ CREATE OR REPLACE TRIGGER isValidRideTiming
   ON Driver_Ride FOR EACH ROW
 BEGIN
   DECLARE 
-    X BOOLEAN := FALSE;
+    numberOfOffendedRides INT := 0;
+    currentTimeStamp TIMESTAMP WITH LOCAL TIME ZONE := Systimestamp + (1/24);
   BEGIN
-    X = NOT EXISTS (
-      SELECT *
-      FROM Driver_Ride r
-      WHERE r.driverEmail = :NEW.driverEmail
-      AND r.departDateTime <= :NEW.departDateTime+1  -- need to figure out proper syntax
-      AND r.departDateTime >= :NEW.departDateTime-1
-    )
+    Dbms_Output.Put_Line(currentTimeStamp);
+    Dbms_Output.Put_Line(:NEW.departDateTime);
+  
+    IF :NEW.departDateTime < currentTimeStamp THEN
+      RAISE_APPLICATION_ERROR(-20001, 'constraint (ride timing not after 1 hour of current time) violated');
+    END IF;
+  
+    SELECT COUNT(*) INTO numberOfOffendedRides
+    FROM Driver_Ride r
+    WHERE r.driverEmail = :NEW.driverEmail
+    AND r.departDateTime <= :NEW.departDateTime+(1/24)
+    AND r.departDateTime >= :NEW.departDateTime-(1/24);
         
-    IF X = FALSE THEN
-      RAISE_APPLICATION_ERROR(-20001, 'Invalid Ride Timing');
+    IF numberOfOffendedRides > 0 THEN
+      RAISE_APPLICATION_ERROR(-20001, 'constraint (ride too close to others) violated');
     END IF;
   END;
 END;
-
-ALTER TABLE Driver_Ride ENABLE ALL TRIGGERS;
+/
+ALTER TRIGGER isValidRideTiming ENABLE;
 
 CREATE TABLE Passenger(
   passengerEmail VARCHAR(256),
@@ -131,10 +149,10 @@ CREATE TABLE Passenger(
     REFERENCES Person(email) 
     ON DELETE CASCADE,
   FOREIGN KEY(rideDepartDateTime, rideDriverEmail) 
-    REFERENCES Ride_Driver(departDateTime, driverEmail) 
+    REFERENCES Driver_Ride(departDateTime, driverEmail) 
     ON DELETE CASCADE
 );
-
+/
 CREATE OR REPLACE TRIGGER hasEnoughCredit
   BEFORE
     INSERT OR
@@ -142,22 +160,25 @@ CREATE OR REPLACE TRIGGER hasEnoughCredit
   ON Passenger FOR EACH ROW
 BEGIN
   DECLARE 
-    X BOOLEAN := FALSE;
+    passengerBalance INT := 0;
+    ridePricePerSeat INT := 0;
   BEGIN
-    X = EXISTS (
-      SELECT *
-      FROM Driver_Ride r, Person p
-      WHERE p.balance >= r.pricePerSeat
-      AND p.email = :NEW.passengerEmail
-      AND r.departDateTime = :NEW.rideDepartDateTime
-      AND r.driverEmail = :NEW.rideDriverEmail
-    )
+    SELECT p.balance INTO passengerBalance
+    FROM Person p
+    WHERE p.email = :NEW.passengerEmail;
+    
+    SELECT r.pricePerSeat INTO ridePricePerSeat
+    FROM Driver_Ride r
+    WHERE r.driverEmail = :NEW.rideDriverEmail
+    AND r.departDateTime = :NEW.rideDepartDateTime;
         
-    IF X = FALSE THEN
-      RAISE_APPLICATION_ERROR(-20001, 'Not Enough Credit');
+    IF passengerBalance < ridePricePerSeat THEN
+        RAISE_APPLICATION_ERROR(-20001, 'constraint (not enough credit) violated');
     END IF;
   END;
 END;
+/
+ALTER TRIGGER hasEnoughCredit ENABLE;
 
 CREATE OR REPLACE TRIGGER isRideTooCloseToOthers
   BEFORE
@@ -166,20 +187,18 @@ CREATE OR REPLACE TRIGGER isRideTooCloseToOthers
   ON Passenger FOR EACH ROW
 BEGIN
   DECLARE 
-    X BOOLEAN := FALSE;
+    numberOfTooCloseRides INT := 0;
   BEGIN
-    X = NOT EXISTS (
-      SELECT *
-      FROM Passenger p
-      WHERE p.rideDepartDateTime <= :NEW.rideDepartDateTime+1  -- need to figure out proper syntax
-      AND p.rideDepartDateTime >= :NEW.rideDepartDateTime-1
-      AND p.passengerEmail = :NEW.passengerEmail
-    )
+    SELECT COUNT(*) INTO numberOfTooCloseRides
+    FROM Passenger p
+    WHERE p.rideDepartDateTime <= :NEW.rideDepartDateTime+(1/24)
+    AND p.rideDepartDateTime >= :NEW.rideDepartDateTime-(1/24)
+    AND p.passengerEmail = :NEW.passengerEmail;
         
-    IF X = FALSE THEN
-      RAISE_APPLICATION_ERROR(-20001, 'Ride too close to others');
+    IF numberOfTooCloseRides > 0 THEN
+      RAISE_APPLICATION_ERROR(-20001, 'constraint (ride too close to others) violated');
     END IF;
   END;
 END;
-
-ALTER TABLE Passenger ENABLE ALL TRIGGERS;
+/
+ALTER TRIGGER isRideTooCloseToOthers ENABLE;
