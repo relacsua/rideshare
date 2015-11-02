@@ -1,5 +1,10 @@
-drop table Owns_Car;
-drop table Person;
-drop table Has_Profile;
-drop table Driver_Ride;
-drop table Passenger;
+DROP TRIGGER isValidDriverAndRideCapacity;
+DROP TRIGGER isValidRideTiming;
+DROP TRIGGER hasEnoughCredit;
+DROP TRIGGER isRideTooCloseToOthers;
+
+DROP TABLE Passenger;
+DROP TABLE Owns_Car;
+DROP TABLE Has_Profile;
+DROP TABLE Driver_Ride;
+DROP TABLE Person;
