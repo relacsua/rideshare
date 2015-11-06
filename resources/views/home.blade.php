@@ -74,6 +74,12 @@
                 <li class="{{ Request::segment(1) == 'cars' ? 'active' : '' }}">
                     <a href="/cars">Cars</a>
                 </li>
+                <li class="{{ Request::segment(1) == 'driverrides' ? 'active' : '' }}">
+                    <a href="/driverrides">Rides & Drivers</a>
+                </li>
+                <li class="{{ Request::segment(1) == 'passengers' ? 'active' : '' }}">
+                    <a href="/passengers">Passengers</a>
+                </li>
                 @endif
             </ul>
         </div>

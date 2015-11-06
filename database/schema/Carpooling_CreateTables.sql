@@ -3,9 +3,9 @@ ALTER SESSION SET TIME_ZONE='+08:00';
 
 SET SERVEROUTPUT ON
  
-BEGIN
-  Dbms_Output.Put_Line(Systimestamp);
-END;
+--BEGIN
+--  Dbms_Output.Put_Line(Systimestamp);
+--END;
 
 CREATE TABLE Person(
   email VARCHAR(256) PRIMARY KEY,
@@ -66,6 +66,7 @@ CREATE TABLE Driver_Ride(
   CONSTRAINT isRideStarted CHECK (isStarted IN ('TRUE', 'FALSE')),
   CONSTRAINT validCancel CHECK (NOT(isCancelled = 'TRUE' AND isStarted = 'TRUE')),
   CONSTRAINT validPrice CHECK (pricePerSeat >= 0),
+  CONSTRAINT validDestAndDepartLoc CHECK (departLocation <> destination),
   
   PRIMARY KEY (departDateTime, driverEmail),
   
@@ -107,8 +108,7 @@ ALTER TRIGGER isValidDriverAndRideCapacity ENABLE;
 
 CREATE OR REPLACE TRIGGER isValidRideTiming
   BEFORE
-    INSERT OR
-    UPDATE 
+    INSERT 
   ON Driver_Ride FOR EACH ROW
 BEGIN
   DECLARE 

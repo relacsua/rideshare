@@ -10,6 +10,8 @@
 | and give it the controller to call when that URI is requested.
 |
 */
+Route::resource("/driverrides/driver.datetime", "DriverRideController");
+Route::resource("/passengers/passenger.driver.datetime", "PassengerController");
 
 /*
  * Rendering static pages
@@ -34,9 +36,20 @@ Route::group(['middleware' => 'admin'], function()
 {
 	/* Person routes */
 	Route::resource('persons', 'PersonController', ['only' => ['index', 'show', 'edit', 'update', 'delete']]);
-  /* Profile routes */
-  Route::resource('profiles', 'ProfileController', ['only' => ['index', 'show', 'edit', 'update']]);
-  Route::delete('/profiles/{email}/{userid}', ['uses' => 'ProfileController@destroy']);
+	
+	/* Profile routes */
+	Route::resource('profiles', 'ProfileController', ['only' => ['index', 'show', 'edit', 'update']]);
+	Route::delete('/profiles/{email}/{userid}', ['uses' => 'ProfileController@destroy']);
+
+	/* Car routes */
+	Route::resource('cars', 'CarController', ['only' => ['index', 'show', 'edit', 'update', 'delete']]);
+
+	/* Rides & Drivers routes */
+	Route::resource('driverrides', 'DriverRideController', ['only' => ['index', 'show', 'edit', 'update', 'delete']]);
+
+	/* Passengers routes */
+	Route::resource('passengers', 'PassengerController', ['only' => ['index', 'show', 'edit', 'update', 'delete']]);
+
 });
 
 /* 
