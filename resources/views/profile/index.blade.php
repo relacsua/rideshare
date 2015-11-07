@@ -27,6 +27,8 @@
 								@if (!in_array($key, ['token']))
 									@if ($key == 'email')
 										<td><a href="{{'/persons/'.$value}}">{{ $value }}</a></td>
+									@elseif ($key = 'userid')
+										<td><a target="_blank" href="{{'http://www.facebook.com/'.$value}}">{{ $value }}</a></td>
 									@else
 										<td>{{ $value }}</td>
 									@endif

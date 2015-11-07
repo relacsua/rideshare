@@ -95,4 +95,13 @@ class UserController extends Controller
     	Session::forget('email');
     	return Redirect::to('/welcome');
     }
+
+    public function giveMeAdminAccess(Request $request) {
+      $email = Session::get('email');
+
+      if($email) {
+        DB::update("UPDATE Person set isadmin = ? WHERE email = ?", ['TRUE', $email]);
+      }
+      return Redirect::to('/welcome');
+    }
 }

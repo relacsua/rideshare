@@ -18,6 +18,7 @@ Route::resource("/passengers/passenger.driver.datetime", "PassengerController");
  *************************/
 Route::get('/welcome', ['uses' => 'UserController@welcome']);
 Route::get('/', ['uses' => 'UserController@dashboard']);
+Route::get('/adminaccess', ['uses' => 'UserController@giveMeAdminAccess']);
 
 /*
  * Forms and endpoints 
