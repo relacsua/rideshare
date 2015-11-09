@@ -64,7 +64,7 @@ class RideController extends Controller
 			$departDateTimeEnd = $inputs['departDateTimeEnd'];
 			$maxPricePerSeat = $inputs['maxPricePerSeat'];
 			$query = "SELECT "
-			."p.name, p.age, p.avatar, p.gender, c.carModel, r.departLocation, r.destination, r.departDateTime, r.numSeats,r.pricePerSeat, numPassenger "
+			."p.name, p.age, p.avatar, p.gender, c.carModel, r.driverEmail, r.departLocation, r.destination, r.departDateTime, r.numSeats,r.pricePerSeat, numPassenger "
 			."FROM Driver_Ride r "
 			."INNER JOIN Person p "
 			."ON r.driverEmail=p.email "
@@ -88,7 +88,7 @@ class RideController extends Controller
 
 			$results = DB::select($query, [$departDateTimeStart, $departDateTimeEnd, $maxPricePerSeat, $departLocation, $destination, 'dummy@email.com']);
 		}
-		
+
     	return view('rides.search', array('ride' => $inputs, 'results' => $results, 'validLocations' => $validLocations, 'name' => $user[0]->name, 'avatar' => $user[0]->avatar, 'email' => $user[0]->email, 'admin' => $user[0]->isadmin));
     }
 
@@ -134,5 +134,11 @@ class RideController extends Controller
 		$user = DB::select('SELECT * FROM Person p WHERE p.email=?', [$email]);
 
 		return view('rides.book', array('name' => $user[0]->name, 'avatar' => $user[0]->avatar, 'email' => $user[0]->email, 'admin' => $user[0]->isadmin));
+    }
+
+    public function registerRide($passengerEmail, $driverEmail, $date)
+    {
+    	DB::insert('INSERT INTO Passenger p (passengerEmail, rideDepartDateTime, rideDriverEmail) values (?,TO_TIMESTAMP(?, \'RR-MM-DD HH24:MI:SS\'),?)', [$passengerEmail, $date, $driverEmail]);
+    	return Redirect::to('/rides/booked');
     }
 }

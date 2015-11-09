@@ -103,6 +103,21 @@
     .divider {
       border-right: 1px solid goldenrod;
     }
+
+    .form-inline {
+      text-align: center;
+    }
+
+    @media(max-width:991px) {
+      .result-upper,
+      .result-lower {
+        height: auto;
+      }
+      .result-image {
+        max-width: 200px;
+        margin: auto;
+      }
+    }
   </style>
 @stop
 
@@ -189,7 +204,7 @@
                 <p>Avalaible</p>
               </div>
               <div class="col-md-3 result-ride-start-btn-holder">
-                {!! Form::open(array('url' => '', 'onsubmit' => "return confirm('Are you sure you want to sign up for the ride?');")) !!}
+                {!! Form::open(array('url' => '/rides/passenger/'.$email.'/driver/'.$result->driveremail.'/datetime/'.$result->departdatetime, 'onsubmit' => "return confirm('Are you sure you want to sign up for the ride?');")) !!}
                   <button type="submit" class="btn rideshare-btn">take this ride</button>
                 {!! Form::close() !!}
               </div>
