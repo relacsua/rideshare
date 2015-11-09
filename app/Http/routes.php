@@ -32,6 +32,10 @@ Route::get('/me/edit', ['uses' => 'AccountController@edit']);
 Route::get('/rides/new', ['uses' => 'RideController@create']);
 Route::post('/rides/create', ['uses' => 'RideController@store']);
 Route::get('/rides/managed', ['uses' => 'RideController@manage']);
+Route::post('/rides/managed/{ridedepartdatetime}/startRide', ['uses' => 'RideController@startRide']);
+Route::post('/rides/managed/{ridedepartdatetime}/endRide', ['uses' => 'RideController@endRide']);
+Route::post('/rides/managed/{ridedepartdatetime}/cancelRide', ['uses' => 'RideController@cancelRide']);
+Route::get('/rides/booked', ['uses' => 'RideController@book']);
 Route::get('/rides/search', ['uses' => 'RideController@search']);
 
 /* 
