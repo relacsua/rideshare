@@ -18,6 +18,13 @@
     #form-wrapper {
       border-bottom: 1px solid #ffd34e;
     }
+    .result-counter {
+      text-align: right;
+      font-weight: 600;
+    }
+    .result-container {
+      padding: 20px;
+    }
   </style>
 @stop
 
@@ -63,16 +70,25 @@
   </div>
   @if (empty($results) && !empty($ride))
     <div class="row">
-      <p>No results. Try again.</p>
+      <p class="result-counter">No results. Try again.</p>
     </div>
   @elseif (!empty($results) && !empty($ride))
     <div class="row">
-      <p>{{count($results).' '.(count($results) > 1 ? 'results' : 'result')}} found.</p>
+      <p class="result-counter">{{count($results).' '.(count($results) > 1 ? 'results' : 'result')}} found.</p>
       @foreach ($results as $result)
-        <div>
-          @foreach ($result as $key => $value)
-            <p>{{ $key.' : '.$value }}</p>
-          @endforeach
+        <div class="result-container">
+          <div class="row">
+            <div class="col-md-1">
+              <img src="{{$result->avatar}}" >
+            </div>
+
+            <div class="col-md-1 col-md-offset-9">
+
+            </div>
+            <div class="col-md-1">
+
+            </div>
+          </div>  
         </div>
       @endforeach
     </div>

@@ -78,7 +78,7 @@ class CarController extends Controller
         $email = Session::get('email');
         $user = DB::select('SELECT * FROM Person p WHERE p.email=?', [$email]);
 
-        $car = DB::select('SELECT * FROM Owns_Car c WHERE c.owneremail=? AND c.carplateno=?', [$email, $id]);
+        $car = DB::select('SELECT * FROM Owns_Car c WHERE c.carplateno=?', [$email, $id]);
         
         $car_details = array(
             'carplateno' => $car[0]->carplateno,

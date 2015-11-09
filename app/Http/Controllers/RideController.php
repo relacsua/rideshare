@@ -84,7 +84,7 @@ class RideController extends Controller
 				."AND r.departLocation= ? "
 				."AND r.destination= ? "
 				."AND r.driverEmail<> ? "
-				."AND numPassenger < r.numSeats OR numPassenger is null";
+				."AND (numPassenger < r.numSeats OR numPassenger is null)";
 
 				$results = DB::select($query, [$departDateTimeStart, $departDateTimeEnd, $maxPricePerSeat, $departLocation, $destination, 'dummy@email.com']);
 			}
