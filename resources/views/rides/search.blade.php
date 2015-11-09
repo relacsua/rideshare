@@ -25,6 +25,84 @@
     .result-container {
       padding: 20px;
     }
+    .result-image {
+      width: 100%;
+    }
+    .result-upper,
+    .result-lower {
+      overflow: hidden;
+    }
+    .result-upper {
+      height: 150px;
+    }
+    .result-lower {
+      height: 70px;
+      padding: 20px 0;
+    }
+    .result-driver-name,
+    .result-driver-details {
+      text-transform: uppercase;
+      font-weight: bold
+    }
+    .result-driver-name {
+      color: #db9e36;
+      margin-top: 40px;
+    }
+    .result-item {
+      padding: 10px;
+      background: #ffd34e;
+      margin: 20px 0;
+    }
+    .result-item:hover {
+      -webkit-box-shadow: 0px 0px 5px 5px rgb(202, 191, 159);
+      -moz-box-shadow: 0px 0px 5px 5px rgb(202, 191, 159);
+      box-shadow: 0px 0px 5px 5px rgb(202, 191, 159);
+    }
+    .result-ride-price {
+      margin-top: 40px;
+    }
+    .result-ride-price sup {
+      font-size: 50%;
+      vertical-align: super;
+    }
+    .result-ride-price-desc {
+      text-transform: uppercase;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    .result-ride-start-end p,
+    .result-ride-time p {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    .result-car-model,
+    .result-ride-passenger p,
+    .result-ride-start-end p,
+    .result-ride-time p
+    .result-ride-time p {
+      text-align: center;
+    }
+    .result-ride-time p {
+      font-size: 12px;
+    }
+    .result-ride-passenger p:first-child {
+      font-weight: bold;
+    }
+    .result-ride-passenger p:last-child {
+      text-transform: uppercase;
+      font-size: 12px;
+      font-weight: 300;
+    }
+    .result-ride-passenger p {
+      margin: 0;
+    }
+    .result-ride-start-btn-holder form button {
+      width: 100%;
+      text-transform: uppercase;
+    }
+    .divider {
+      border-right: 1px solid goldenrod;
+    }
   </style>
 @stop
 
@@ -75,22 +153,50 @@
   @elseif (!empty($results) && !empty($ride))
     <div class="row">
       <p class="result-counter">{{count($results).' '.(count($results) > 1 ? 'results' : 'result')}} found.</p>
-      @foreach ($results as $result)
-        <div class="result-container">
-          <div class="row">
-            <div class="col-md-1">
-              <img src="{{$result->avatar}}" >
-            </div>
+      <div class="result-container">
+        @foreach ($results as $result)
+          <div class="result-item">
+            <div class="row result-upper">
+              <div class="col-md-2">
+                <img class="result-image" src="{{$result->avatar}}" >
+              </div>
 
-            <div class="col-md-1 col-md-offset-9">
-
+              <div class="col-md-2">
+                <p class="result-driver-name">{{$result->name}}</p>
+                <p class="result-driver-details">{{$result->age}} yrs | {{$result->gender}}</p>
+              </div>
+              <div class="col-md-offset-6 col-md-2">
+                <h3 class="result-ride-price">${{$result->priceperseat}}.<sup>00</sup></h3>
+                <span class="result-ride-price-desc">per passenger</span>
+              </div>
             </div>
-            <div class="col-md-1">
-
+            <div class="row result-lower">
+              <div class="col-md-2 result-car-model divider">
+                <h4>{{$result->carmodel}}</h4>
+              </div>
+              <div class="col-md-2 result-ride-start-end divider">
+                <p>{{$result->departlocation}} to {{$result->destination}}</p>
+              </div>
+              <div class="col-md-2 result-ride-time divider">
+                <p>{{$result->departdatetime}}</p>
+              </div>
+              <div class="col-md-2 result-ride-passenger">
+                @if (is_null($result->numpassenger))
+                  <p>{{$result->numseats.($result->numseats > 1 ? ' Seats' : 'Seat') }}</p>
+                @else
+                  <p>{{$result->numseats - $result->numpassenger}}{{' '.($result->numseats - $result->numpassenger > 1 ? 'Seats' : 'Seat')}}</p>
+                @endif
+                <p>Avalaible</p>
+              </div>
+              <div class="col-md-3 result-ride-start-btn-holder">
+                {!! Form::open(array('url' => '', 'onsubmit' => "return confirm('Are you sure you want to sign up for the ride?');")) !!}
+                  <button type="submit" class="btn rideshare-btn">take this ride</button>
+                {!! Form::close() !!}
+              </div>
             </div>
-          </div>  
-        </div>
-      @endforeach
+          </div>
+        @endforeach
+      </div>
     </div>
   @endif
 @stop
