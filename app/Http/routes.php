@@ -10,8 +10,6 @@
 | and give it the controller to call when that URI is requested.
 |
 */
-Route::resource("/driverrides/driver.datetime", "DriverRideController");
-Route::resource("/passengers/passenger.driver.datetime", "PassengerController");
 
 /*
  * Rendering static pages
@@ -29,6 +27,12 @@ Route::get('/me', ['uses' => 'AccountController@show']);
 Route::get('/me/edit', ['uses' => 'AccountController@edit']);
 Route::post('/me/update', ['uses' => 'AccountController@update']);
 Route::post('/accounts', ['uses' => 'AccountController@store']);
+Route::get('/me/edit', ['uses' => 'AccountController@edit']);
+
+Route::get('/rides/new', ['uses' => 'RideController@create']);
+Route::post('/rides/create', ['uses' => 'RideController@store']);
+Route::get('/rides/managed', ['uses' => 'RideController@manage']);
+Route::get('/rides/search', ['uses' => 'RideController@search']);
 
 /* 
  * Admin routes 
@@ -47,9 +51,11 @@ Route::group(['middleware' => 'admin'], function()
 
 	/* Rides & Drivers routes */
 	Route::resource('driverrides', 'DriverRideController', ['only' => ['index', 'show', 'edit', 'update', 'delete']]);
-
+	Route::resource("/driverrides/driver.datetime", "DriverRideController");
+	
 	/* Passengers routes */
 	Route::resource('passengers', 'PassengerController', ['only' => ['index', 'show', 'edit', 'update', 'delete']]);
+	Route::resource("/passengers/passenger.driver.datetime", "PassengerController");
 
 });
 

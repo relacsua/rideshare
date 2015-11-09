@@ -13,7 +13,9 @@
 				<thead>
 					<tr>
 						@foreach ($driverrides[0] as $key => $value)
-							<th>{{ $key }}</th>
+							@if (!in_array($key, ['iscancelled', 'isended', 'isstarted']))
+								<th>{{ $key }}</th>
+							@endif
 						@endforeach	
 						<th>Actions</th>
 					</tr>
@@ -22,7 +24,9 @@
 					@foreach ($driverrides as $driverride)
 						<tr>
 							@foreach ($driverride as $key => $value)
-								<td>{{ $value }}</td>
+								@if (!in_array($key, ['iscancelled', 'isended', 'isstarted']))
+									<td>{{ $value }}</td>
+								@endif
 							@endforeach
 							<td>
 								<a class="btn btn-primary btn-xs" href="{{'/driverrides/driver/'.$driverride->driveremail.'/datetime/'.$driverride->departdatetime}}">Show</a>

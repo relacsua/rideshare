@@ -6,6 +6,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Support\Facades\Redirect;
+use App\Library\Location;
 
 use DB;
 use Socialize;
@@ -24,21 +25,7 @@ class DriverRideController extends Controller
     {
         $email = Session::get('email');
         $person = DB::select('SELECT * FROM Person p WHERE p.email=?', [$email]);
-
         $driverrides = DB::select('SELECT * FROM Driver_Ride');
-
-        foreach ($driverrides as &$driverride) {
-            foreach ($driverride as $key => &$value) {
-                if (in_array($key, ['departdatetime'])) {
-                    date_default_timezone_set('Asia/Singapore');
-                    $UTCdate = strtotime($value.' UTC');
-                    $value = date('d-m-y H:i:s', $UTCdate);
-                }
-            }
-            unset($value);
-        }
-        unset ($driverride);
-        
         return view('driverride.index', ['driverrides' => $driverrides, 'name' => $person[0]->name, 'avatar' => $person[0]->avatar, 'email' => $person[0]->email, 'admin' => $person[0]->isadmin]);
     }
 
@@ -73,21 +60,7 @@ class DriverRideController extends Controller
     {
         $email = Session::get('email');
         $user = DB::select('SELECT * FROM Person p WHERE p.email=?', [$email]);
-
-        date_default_timezone_set('UTC');
-        $UTCdate = strtotime($datetime.' Asia/Singapore');
-        $formatted_datetime = date('y-m-d H:i:s', $UTCdate);
-
-        $driverride = DB::select('SELECT * FROM Driver_Ride r WHERE r.driveremail=? AND r.departdatetime=TO_TIMESTAMP(?, \'DD-MM-RR HH24:MI:SS\')', [$driver, $formatted_datetime]);
-        foreach ($driverride[0] as $key => &$value) {
-            if (in_array($key, ['departdatetime'])) {
-                date_default_timezone_set('Asia/Singapore');
-                $UTCdate = strtotime($value.' UTC');
-                $value = date('d-m-y H:i:s', $UTCdate);
-            }
-        }
-        unset($value);
-
+        $driverride = DB::select("SELECT * FROM Driver_Ride r WHERE r.driveremail=? AND r.departdatetime=TO_TIMESTAMP(?, 'RR-MM-DD HH24:MI:SS')", [$driver, $datetime]);
         return view('driverride.show', ['driverrides' => $driverride, 'name' => $user[0]->name, 'avatar' => $user[0]->avatar, 'email' => $user[0]->email, 'admin' => $user[0]->isadmin]);
     }
 
@@ -101,35 +74,25 @@ class DriverRideController extends Controller
     {
         $email = Session::get('email');
         $user = DB::select('SELECT * FROM Person p WHERE p.email=?', [$email]);
+        $Location = new Location;
+        $validLocations = $Location->getValidLocations();
         
-        date_default_timezone_set('UTC');
-        $UTCdate = strtotime($datetime.' Asia/Singapore');
-        $formatted_datetime = date('y-m-d H:i:s', $UTCdate);
-
-        $driverride = DB::select('SELECT * FROM Driver_Ride r WHERE r.driveremail=? AND r.departdatetime=TO_TIMESTAMP(?, \'DD-MM-RR HH24:MI:SS\')', [$driver, $formatted_datetime]);
-        
-        foreach ($driverride[0] as $key => &$value) {
-            if (in_array($key, ['departdatetime'])) {
-                date_default_timezone_set('Asia/Singapore');
-                $UTCdate = strtotime($value.' UTC');
-                $value = date('d-m-y H:i:s', $UTCdate);
-            }
-        }
-        unset($value);
+        $curr_driver = DB::select('SELECT * FROM Owns_Car c where c.ownerEmail=?', [$driver]);
+        $driverride = DB::select("SELECT * FROM Driver_Ride r WHERE r.driveremail=? AND r.departdatetime=TO_TIMESTAMP(?, 'RR-MM-DD HH24:MI:SS')", [$driver, $datetime]);
 
         $driverride_details = array(
-            'departdatetime' => $driverride[0]->departdatetime,
-            'departlocation' => $driverride[0]->departlocation,
+            'departDateTime' => $newDate = date("d-m-y H:i:s", strtotime($driverride[0]->departdatetime)),
+            'departLocation' => $driverride[0]->departlocation,
             'destination' => $driverride[0]->destination,
-            'driveremail' => $driverride[0]->driveremail,
-            'priceperseat' => $driverride[0]->priceperseat,
-            'numseats' => $driverride[0]->numseats,
-            'iscancelled' => $driverride[0]->iscancelled,
-            'isstarted' => $driverride[0]->isstarted,
-            'isended' => $driverride[0]->isended
+            'driverEmail' => $driverride[0]->driveremail,
+            'pricePerSeat' => $driverride[0]->priceperseat,
+            'numSeats' => $driverride[0]->numseats,
+            'isCancelled' => $driverride[0]->iscancelled,
+            'isStarted' => $driverride[0]->isstarted,
+            'isEnded' => $driverride[0]->isended
         );
 
-        return view('driverride.edit', ['driverrides' => $driverride_details, 'name' => $user[0]->name, 'avatar' => $user[0]->avatar, 'email' => $user[0]->email, 'admin' => $user[0]->isadmin]);
+        return view('driverride.edit', ['maxSeats' => $curr_driver[0]->numseats, 'validLocations' => $validLocations, 'driverrides' => $driverride_details, 'name' => $user[0]->name, 'avatar' => $user[0]->avatar, 'email' => $user[0]->email, 'admin' => $user[0]->isadmin]);
     }
 
     /**
@@ -142,25 +105,17 @@ class DriverRideController extends Controller
     public function update(Request $request, $driver, $datetime)
     {
         $inputs = Request::all();
-
-        $departdatetime = $inputs['departdatetime'];
-
-        date_default_timezone_set('UTC');
-        $UTCdate = strtotime($departdatetime.' Asia/Singapore');
-        $formatted_datetime = date('y-m-d H:i:s', $UTCdate);
-
-        $departlocation = $inputs['departlocation'];
+        
+        $departlocation = $inputs['departLocation'];
         $destination = $inputs['destination'];
-        $driveremail = $inputs['driveremail'];
-        $priceperseat = $inputs['priceperseat'];
-        $numseats = $inputs['numseats'];
-        $iscancelled = $inputs['iscancelled'];
-        $isstarted = $inputs['isstarted'];
-        $isended = $inputs['isended'];
+        $priceperseat = $inputs['pricePerSeat'];
+        $numseats = $inputs['numSeats'];
+        $iscancelled = $inputs['isCancelled'];
+        $isstarted = $inputs['isStarted'];
+        $isended = $inputs['isEnded'];
 
-        DB::update('UPDATE Driver_Ride set departdatetime = TO_TIMESTAMP(?, \'DD-MM-RR HH24:MI:SS\'), departlocation = ?, destination = ?, driveremail = ?, priceperseat = ?, numseats = ?, iscancelled = ?, isstarted = ?, isended = ?  WHERE driveremail = ? AND departdatetime = TO_TIMESTAMP(?, \'DD-MM-RR HH24:MI:SS\')', [$formatted_datetime, $departlocation, $destination, $driveremail, $priceperseat, $numseats, $iscancelled, $isstarted, $isended, $driveremail, $formatted_datetime]);
-
-        return Redirect::to('/driverrides/driver/'.$driver.'/datetime/'.$datetime);
+        DB::update('UPDATE Driver_Ride set departlocation = ?, destination = ?, priceperseat = ?, numseats = ?, iscancelled = ?, isstarted = ?, isended = ?  WHERE driveremail = ? AND departdatetime = TO_TIMESTAMP(?, \'DD-MM-RR HH24:MI:SS\')', [$departlocation, $destination, $priceperseat, $numseats, $iscancelled, $isstarted, $isended, $driver, $datetime]);
+        return Redirect::to('/driverrides/driver/'.$driver.'/datetime/'.date_format(date_create_from_format('d-m-y H:i:s', $datetime), 'Y-m-d H:i:s'));
     }
 
     /**
@@ -171,11 +126,7 @@ class DriverRideController extends Controller
      */
     public function destroy($driver, $datetime)
     {
-        date_default_timezone_set('UTC');
-        $UTCdate = strtotime($datetime.' Asia/Singapore');
-        $formatted_datetime = date('y-m-d H:i:s', $UTCdate);
-
-        DB::delete('DELETE FROM Driver_Ride r WHERE r.driveremail=? AND r.departdatetime=TO_TIMESTAMP(?, \'DD-MM-RR HH24:MI:SS\')', [$driver, $formatted_datetime]);
+        DB::delete('DELETE FROM Driver_Ride r WHERE r.driveremail=? AND r.departdatetime=TO_TIMESTAMP(?, \'RR-MM-DD HH24:MI:SS\')', [$driver, $datetime]);
         return Redirect::to('/driverrides');
     }
 }

@@ -8,6 +8,7 @@
         <link rel="stylesheet" type="text/css" href="{{ asset('/vendor/bootstrap/dist/css/bootstrap.min.css') }}">
         <link rel="stylesheet" type="text/css" href="{{ asset('/css/home.css') }}">
         <link rel="stylesheet" type="text/css" href="{{ asset('/css/sidebar.css') }}">
+        @yield('style')
     </head>
     <body>
         @if (is_object($errors) && $errors->any())
@@ -61,6 +62,12 @@
                 <li class="{{ Request::segment(1) == 'me' ? 'active' : '' }}">
                     <a href="/me">Profile</a>
                 </li>
+                <li class="{{ Request::segment(1) == 'rides' && Request::segment(2) == 'managed' ? 'active' : '' }}">
+                    <a href="/rides/managed">Manage Rides</a>
+                </li>
+                <li class="{{ Request::segment(1) == 'rides' && Request::segment(2) == 'booked' ? 'active' : '' }}">
+                    <a href="/rides/booked">Booked Rides</a>
+                </li>
                 @if ($admin == 'TRUE')
                 <li>
                     <span class="sub-menu-title">Admin</span>
@@ -99,5 +106,6 @@
                 $("#wrapper").toggleClass("toggled");
             });
         </script>
+        @yield('script')
     </body>
 </html>
