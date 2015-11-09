@@ -101,7 +101,22 @@ class RideController extends Controller
 		$postedrides = DB::select('SELECT * FROM Driver_Ride r WHERE r.driverEmail = ? AND r.isCancelled = \'FALSE\' AND r.isStarted = \'FALSE\' AND r.isEnded = \'FALSE\' AND r.departDateTime > SYSTIMESTAMP-(1/24)', [$email]);
 		$ridehistories = DB::select('SELECT * FROM Driver_Ride r WHERE r.driverEmail = ? AND (r.isCancelled = \'TRUE\' OR r.isEnded = \'TRUE\' OR (r.isStarted = \'FALSE\' AND r.departDateTime < SYSTIMESTAMP-(1/24)))',[$email]);
 
+		$postedrides = $this->appendPassengers($postedrides);
+		$inprogressrides = $this->appendPassengers($inprogressrides);
+		$ridehistories = $this->appendPassengers($ridehistories);
+		
 		return view('rides.manage', array('postedrides' => $postedrides, 'inprogressrides' => $inprogressrides, 'ridehistories' => $ridehistories, 'name' => $user[0]->name, 'avatar' => $user[0]->avatar, 'email' => $user[0]->email, 'admin' => $user[0]->isadmin));
+    }
+
+    private function appendPassengers($rides)
+    {
+    	foreach($rides as &$ride) {
+			$passengerList = DB::select('SELECT p.passengerEmail, pr.name, pr.avatar from Passenger p INNER JOIN Person pr ON pr.email=p.passengerEmail WHERE p.rideDepartDateTime=TO_TIMESTAMP(?, \'RR-MM-DD HH24:MI:SS\') AND p.rideDriverEmail=?', [$ride->departdatetime, $ride->driveremail]);
+			$ride->passengers = $passengerList;
+		}
+		unset($ride);
+
+		return $rides;
     }
 
     public function startRide($ridedepartdatetime)
