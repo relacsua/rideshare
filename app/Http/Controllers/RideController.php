@@ -86,7 +86,7 @@ class RideController extends Controller
 			."AND r.driverEmail<> ? "
 			."AND (numPassenger < r.numSeats OR numPassenger is null)";
 
-			$results = DB::select($query, [$departDateTimeStart, $departDateTimeEnd, $maxPricePerSeat, $departLocation, $destination, 'dummy@email.com']);
+			$results = DB::select($query, [$departDateTimeStart, $departDateTimeEnd, $maxPricePerSeat, $departLocation, $destination, $email]);
 		}
 
     	return view('rides.search', array('ride' => $inputs, 'results' => $results, 'validLocations' => $validLocations, 'name' => $user[0]->name, 'avatar' => $user[0]->avatar, 'email' => $user[0]->email, 'admin' => $user[0]->isadmin));
@@ -148,12 +148,74 @@ class RideController extends Controller
     	$email = Session::get('email');
 		$user = DB::select('SELECT * FROM Person p WHERE p.email=?', [$email]);
 
-		return view('rides.book', array('name' => $user[0]->name, 'avatar' => $user[0]->avatar, 'email' => $user[0]->email, 'admin' => $user[0]->isadmin));
+		$queryForBookedRides = "SELECT p.name, p.email, p.age, p.gender, p.avatar, c.carModel, r.departLocation, r.destination, r.pricePerSeat, r.departDateTime "
+		."FROM "
+		."( "
+  		."SELECT pr.rideDriverEmail as pr_email, pr.rideDepartDateTime as pr_date "
+  		."FROM Passenger pr "
+  		."WHERE pr.passengerEmail = ? "
+		.") "
+		."INNER JOIN Driver_ride r "
+		."ON r.driverEmail = pr_email AND r.departDateTime = pr_date "
+		."INNER JOIN Person p "
+		."ON pr_email = p.email "
+		."INNER JOIN Owns_car c "
+		."ON pr_email = c.ownerEmail "
+		."WHERE r.isCancelled = 'FALSE' "
+		."AND r.isStarted = 'FALSE' "
+		."AND r.isEnded = 'FALSE' "
+		."AND r.departDateTime > SYSTIMESTAMP-(1/24)";
+
+		$queryForProgressOfBookedRides = "SELECT p.name, p.email, p.age, p.gender, p.avatar, c.carModel, r.departLocation, r.destination, r.pricePerSeat, r.departDateTime "
+		."FROM "
+		."( "
+  		."SELECT pr.rideDriverEmail as pr_email, pr.rideDepartDateTime as pr_date "
+  		."FROM Passenger pr "
+  		."WHERE pr.passengerEmail = ? "
+		.") "
+		."INNER JOIN Driver_ride r "
+		."ON r.driverEmail = pr_email AND r.departDateTime = pr_date "
+		."INNER JOIN Person p "
+		."ON pr_email = p.email "
+		."INNER JOIN Owns_car c "
+		."ON pr_email = c.ownerEmail "
+		."WHERE r.isCancelled = 'FALSE' "
+		."AND r.isStarted = 'TRUE' "
+		."AND r.isEnded = 'FALSE'";
+
+		$queryForHistoryOfBookedRides = "SELECT p.name, p.email, p.age, p.gender, p.avatar, c.carModel, r.departLocation, r.destination, r.pricePerSeat, r.departDateTime, r.isCancelled, r.isEnded, r.isStarted "
+		."FROM "
+		."( "
+  		."SELECT pr.rideDriverEmail as pr_email, pr.rideDepartDateTime as pr_date "
+  		."FROM Passenger pr "
+  		."WHERE pr.passengerEmail = ? "
+		.") "
+		."INNER JOIN Driver_ride r "
+		."ON r.driverEmail = pr_email AND r.departDateTime = pr_date "
+		."INNER JOIN Person p "
+		."ON pr_email = p.email "
+		."INNER JOIN Owns_car c "
+		."ON pr_email = c.ownerEmail "
+		."WHERE (r.isCancelled = 'TRUE' "
+		."OR r.isEnded = 'TRUE' "
+		."OR (r.isStarted = 'FALSE' AND r.departDateTime < SYSTIMESTAMP-(1/24)))";
+
+		$bookedRides = DB::select($queryForBookedRides, [$email]);
+		$bookedProgressRides = DB::select($queryForProgressOfBookedRides, [$email]);
+		$bookedHistoryRides = DB::select($queryForHistoryOfBookedRides, [$email]);
+
+		return view('rides.book', array('booked' => $bookedRides, 'progress' => $bookedProgressRides, 'history' => $bookedHistoryRides, 'name' => $user[0]->name, 'avatar' => $user[0]->avatar, 'email' => $user[0]->email, 'admin' => $user[0]->isadmin));
     }
 
     public function registerRide($passengerEmail, $driverEmail, $date)
     {
     	DB::insert('INSERT INTO Passenger p (passengerEmail, rideDepartDateTime, rideDriverEmail) values (?,TO_TIMESTAMP(?, \'RR-MM-DD HH24:MI:SS\'),?)', [$passengerEmail, $date, $driverEmail]);
+    	return Redirect::to('/rides/booked');
+    }
+
+    public function withdrawRide($passengerEmail, $driverEmail, $date)
+    {
+    	DB::delete("DELETE FROM Passenger p WHERE p.passengerEmail=? AND p.rideDepartDateTime=TO_TIMESTAMP(?, 'RR-MM-DD HH24:MI:SS') AND p.rideDriverEmail=?", [$passengerEmail, $date, $driverEmail]);
     	return Redirect::to('/rides/booked');
     }
 }

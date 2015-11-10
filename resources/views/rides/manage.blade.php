@@ -114,12 +114,18 @@
 		}
 		.status-completed span{
 			color: #85DB18;
+			padding: 4px;
+    		border: 2px solid #85DB18;
 		}
 		.status-cancelled span{
 			color: #611427;
+			padding: 4px;
+    		border: 2px solid #611427;
 		}
 		.status-expired span{
 			color: #424242;
+			padding: 4px;
+			border: 2px solid #424242;
 		}
 	</style>
 @stop
@@ -294,11 +300,11 @@
 												</div>
 												<div class="status">
 													@if ($ridehistory->iscancelled == 'TRUE')
-														<span class="status-cancelled">(<span>cancelled</span>)</span>
+														<span class="status-cancelled"><span>cancelled</span></span>
 													@elseif ($ridehistory->isstarted == 'TRUE' && $ridehistory->isended == 'TRUE')
-														<span class="status-completed">(<span>completed</span>)</span>
+														<span class="status-completed"><span>completed</span></span>
 													@else
-														<span class="status-expired">(<span>expired</span>)</span>
+														<span class="status-expired"><span>expired</span></span>
 													@endif
 												</div>
 											</div>

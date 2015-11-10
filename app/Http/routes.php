@@ -38,6 +38,7 @@ Route::post('/rides/managed/{ridedepartdatetime}/cancelRide', ['uses' => 'RideCo
 Route::get('/rides/booked', ['uses' => 'RideController@book']);
 Route::get('/rides/search', ['uses' => 'RideController@search']);
 Route::post('/rides/passenger/{passengerEmail}/driver/{driverEmail}/datetime/{date}', ['uses' => 'RideController@registerRide']);
+Route::delete('/rides/passenger/{passengerEmail}/driver/{driverEmail}/datetime/{date}', ['uses' => 'RideController@withdrawRide']);
 
 /* 
  * Admin routes 
