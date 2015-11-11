@@ -42,7 +42,12 @@ class RideController extends Controller
 	        $departDateTime = $inputs['departDateTime'];
 	        $pricePerSeat = $inputs['pricePerSeat'];
 	        $numSeats = $inputs['numSeats'];
-	        DB::insert("INSERT INTO Driver_Ride (departLocation, destination, departDateTime, pricePerSeat, numSeats, driverEmail) VALUES (?,?,to_timestamp(?, 'dd-mm-rr hh24:mi:ss'),?,?,?)", [$departLocation, $destination, $departDateTime, $pricePerSeat, $numSeats, $email]);
+
+	        try {
+	        	DB::insert("INSERT INTO Driver_Ride (departLocation, destination, departDateTime, pricePerSeat, numSeats, driverEmail) VALUES (?,?,to_timestamp(?, 'dd-mm-rr hh24:mi:ss'),?,?,?)", [$departLocation, $destination, $departDateTime, $pricePerSeat, $numSeats, $email]);
+	        } catch(Exception $e) {
+	        	dd($e);
+	        }
 	        
 	        return Redirect::to('/');
 		}

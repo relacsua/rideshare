@@ -25,7 +25,11 @@
 						<tr>
 							@foreach ($person as $key => $value)
 								@if (!in_array($key, ['password', 'isadmin']))
-									<td>{{ $value }}</td>
+									@if (in_array($key, ['balance']))
+										<td>${{ $value }}.00</td>
+									@else
+										<td>{{ $value }}</td>
+									@endif
 								@endif
 							@endforeach
 							<td>

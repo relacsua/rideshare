@@ -89,7 +89,7 @@ BEGIN
     WHERE c.ownerEmail = :NEW.driverEmail;
     
     IF X = 0 THEN
-      RAISE_APPLICATION_ERROR(-20001, 'Not a driver');
+      RAISE_APPLICATION_ERROR(-20001, 'constraint (not a driver) violated');
     END IF;
     
     X := 0;
@@ -129,7 +129,7 @@ BEGIN
     AND r.departDateTime >= :NEW.departDateTime-(1/24);
         
     IF numberOfOffendedRides > 0 THEN
-      RAISE_APPLICATION_ERROR(-20001, 'constraint (ride too close to others) violated');
+      RAISE_APPLICATION_ERROR(-20001, 'constraint (ride to insert too close to others) violated');
     END IF;
   END;
 END;
@@ -196,7 +196,7 @@ BEGIN
     AND p.passengerEmail = :NEW.passengerEmail;
         
     IF numberOfTooCloseRides > 0 THEN
-      RAISE_APPLICATION_ERROR(-20001, 'constraint (ride too close to others) violated');
+      RAISE_APPLICATION_ERROR(-20001, 'constraint (ride to sign up too close to others) violated');
     END IF;
   END;
 END;
