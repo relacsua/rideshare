@@ -39,6 +39,7 @@ Route::get('/rides/booked', ['uses' => 'RideController@book']);
 Route::get('/rides/search', ['uses' => 'RideController@search']);
 Route::post('/rides/passenger/{passengerEmail}/driver/{driverEmail}/datetime/{date}', ['uses' => 'RideController@registerRide']);
 Route::delete('/rides/passenger/{passengerEmail}/driver/{driverEmail}/datetime/{date}', ['uses' => 'RideController@withdrawRide']);
+Route::get('/rides/credit', ['uses' => 'RideController@credit']);
 
 /* 
  * Admin routes 

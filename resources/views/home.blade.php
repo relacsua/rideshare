@@ -68,6 +68,9 @@
                 <li class="{{ Request::segment(1) == 'rides' && Request::segment(2) == 'booked' ? 'active' : '' }}">
                     <a href="/rides/booked">Booked Rides</a>
                 </li>
+                <li class="{{ Request::segment(1) == 'rides' && Request::segment(2) == 'credit' ? 'active' : '' }}">
+                    <a href="/rides/credit">Buy Credits</a>
+                </li>
                 @if ($admin == 'TRUE')
                 <li>
                     <span class="sub-menu-title">Admin</span>

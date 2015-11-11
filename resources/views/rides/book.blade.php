@@ -246,8 +246,8 @@
 				              		<div class="col-md-2">
 				              		</div>
 						            <div class="col-md-3 result-ride-start-btn-holder">
-						            	{!! Form::open(array('url' => '/rides/passenger/'.$email.'/driver/'.$ride->email.'/datetime/'.$ride->departdatetime, 'method' => 'delete', 'onsubmit' => "return confirm('Are you sure you want to withdaw from this ride?');")) !!}
-											<button type="submit" class="btn btn-danger">withdraw ride</button>
+						            	{!! Form::open(array('url' => '/rides/passenger/'.$email.'/driver/'.$ride->email.'/datetime/'.$ride->departdatetime, 'method' => 'delete', 'onsubmit' => "return confirm('Are you sure you want to withdaw from this ride? $".$ride->priceperseat.".00 will be refunded to your account balance.');")) !!}
+											<button type="submit" class="btn btn-danger">Withdraw ride</button>
 										{!! Form::close() !!}
 									</div>
 								</div>

@@ -16,8 +16,8 @@ class RideController extends Controller
     public function create()
     {
 		$email = Session::get('email');
-		$user = DB::select('SELECT * FROM Person p where p.email=?', [$email]);
-		$driver = DB::select('SELECT * FROM Owns_Car c where c.ownerEmail=?', [$email]);
+		$user = DB::select('SELECT * FROM Person p WHERE p.email=?', [$email]);
+		$driver = DB::select('SELECT * FROM Owns_Car c WHERE c.ownerEmail=?', [$email]);
 		if(empty($driver)) {
 			return Redirect::to('/')->with('errors', array('You ain\'t a driver, mate.'));
 		} else {
@@ -31,7 +31,7 @@ class RideController extends Controller
     public function store(Request $request)
     {		
     	$email = Session::get('email');
-    	$driver = DB::select('SELECT * FROM Owns_Car c where c.ownerEmail=?', [$email]);
+    	$driver = DB::select('SELECT * FROM Owns_Car c WHERE c.ownerEmail=?', [$email]);
     		
     	if(empty($driver)) {
 			return Redirect::to('/')->with('errors', array('You ain\'t a driver, mate.'));
@@ -51,7 +51,7 @@ class RideController extends Controller
     public function search(request $request)
     {
     	$email = Session::get('email');
-		$user = DB::select('SELECT * FROM Person p where p.email=?', [$email]);
+		$user = DB::select('SELECT * FROM Person p WHERE p.email=?', [$email]);
     	$Location = new Location;
 		$validLocations = $Location->getValidLocations();
 		$inputs = Request::all();
@@ -72,7 +72,7 @@ class RideController extends Controller
 			."ON r.driverEmail=c.owneremail "
 			."LEFT JOIN "
 			."( "
-				."SELECT pr.RIDEDRIVEREMAIL as pr_rider,pr.RIDEDEPARTDATETIME as pr_date, COUNT(*) as numPassenger "
+				."SELECT pr.RIDEDRIVEREMAIL AS pr_rider,pr.RIDEDEPARTDATETIME AS pr_date, COUNT(*) AS numPassenger "
 				."FROM Passenger pr "
 				."GROUP BY pr.RIDEDRIVEREMAIL,pr.RIDEDEPARTDATETIME "
 			.") "
@@ -81,9 +81,9 @@ class RideController extends Controller
 			."AND r.departDateTime <= to_timestamp(?, 'dd-mm-rr hh24:mi:ss') "
 			."AND r.isCancelled = 'FALSE' AND r.isEnded = 'FALSE' AND r.isStarted = 'FALSE' "
 			."AND r.pricePerSeat <= ? "
-			."AND r.departLocation= ? "
-			."AND r.destination= ? "
-			."AND r.driverEmail<> ? "
+			."AND r.departLocation = ? "
+			."AND r.destination = ? "
+			."AND r.driverEmail <> ? "
 			."AND (numPassenger < r.numSeats OR numPassenger is null)";
 
 			$results = DB::select($query, [$departDateTimeStart, $departDateTimeEnd, $maxPricePerSeat, $departLocation, $destination, $email]);
@@ -111,7 +111,7 @@ class RideController extends Controller
     private function appendPassengers($rides)
     {
     	foreach($rides as &$ride) {
-			$passengerList = DB::select('SELECT p.passengerEmail, pr.name, pr.avatar from Passenger p INNER JOIN Person pr ON pr.email=p.passengerEmail WHERE p.rideDepartDateTime=TO_TIMESTAMP(?, \'RR-MM-DD HH24:MI:SS\') AND p.rideDriverEmail=?', [$ride->departdatetime, $ride->driveremail]);
+			$passengerList = DB::select('SELECT p.passengerEmail, pr.name, pr.avatar FROM Passenger p INNER JOIN Person pr ON pr.email=p.passengerEmail WHERE p.rideDepartDateTime=TO_TIMESTAMP(?, \'RR-MM-DD HH24:MI:SS\') AND p.rideDriverEmail=?', [$ride->departdatetime, $ride->driveremail]);
 			$ride->passengers = $passengerList;
 		}
 		unset($ride);
@@ -123,7 +123,7 @@ class RideController extends Controller
     {
     	$email = Session::get('email');
     	
-    	DB::update('UPDATE Driver_Ride set isStarted = ? WHERE driverEmail = ? AND departdatetime = TO_TIMESTAMP(?, \'RR-MM-DD HH24:MI:SS\')', ['TRUE', $email, $ridedepartdatetime]);
+    	DB::update('UPDATE Driver_Ride SET isStarted = ? WHERE driverEmail = ? AND departdatetime = TO_TIMESTAMP(?, \'RR-MM-DD HH24:MI:SS\')', ['TRUE', $email, $ridedepartdatetime]);
     	return Redirect::to('/rides/managed');
     }
 
@@ -131,7 +131,7 @@ class RideController extends Controller
     {
     	$email = Session::get('email');
 
-    	DB::update('UPDATE Driver_Ride set isEnded = ? WHERE driverEmail = ? AND departdatetime = TO_TIMESTAMP(?, \'RR-MM-DD HH24:MI:SS\')', ['TRUE', $email, $ridedepartdatetime]);
+    	DB::update('UPDATE Driver_Ride SET isEnded = ? WHERE driverEmail = ? AND departdatetime = TO_TIMESTAMP(?, \'RR-MM-DD HH24:MI:SS\')', ['TRUE', $email, $ridedepartdatetime]);
     	return Redirect::to('/rides/managed');
     }
 
@@ -139,7 +139,15 @@ class RideController extends Controller
     {
     	$email = Session::get('email');
 
-    	DB::update('UPDATE Driver_Ride set isCancelled = ? WHERE driverEmail = ? AND departdatetime = TO_TIMESTAMP(?, \'RR-MM-DD HH24:MI:SS\')', ['TRUE', $email, $ridedepartdatetime]);
+    	$cancelledRide = DB::select('SELECT * FROM Driver_Ride r WHERE driverEmail = ? AND departdatetime = TO_TIMESTAMP(?, \'RR-MM-DD HH24:MI:SS\')', [$email, $ridedepartdatetime]);
+    	DB::update('UPDATE Driver_Ride SET isCancelled = ? WHERE driverEmail = ? AND departdatetime = TO_TIMESTAMP(?, \'RR-MM-DD HH24:MI:SS\')', ['TRUE', $email, $ridedepartdatetime]);
+    	$passengersAffected = DB::select('SELECT * FROM Passenger p WHERE p.rideDepartDateTime = TO_TIMESTAMP(?, \'RR-MM-DD HH24:MI:SS\') AND p.rideDriverEmail = ?', [$ridedepartdatetime, $email]);
+
+    	foreach ($passengersAffected as $passengerAffected) {
+    		$personAffected = DB::select('SELECT * FROM Person p WHERE p.email = ?', [$passengerAffected->passengeremail]);
+    		DB::update('UPDATE Person SET balance = ? WHERE email = ?', [($personAffected[0]->balance + $cancelledRide[0]->priceperseat), $passengerAffected->passengeremail]);
+    	}
+
     	return Redirect::to('/rides/managed');
     }
 
@@ -151,7 +159,7 @@ class RideController extends Controller
 		$queryForBookedRides = "SELECT p.name, p.email, p.age, p.gender, p.avatar, c.carModel, r.departLocation, r.destination, r.pricePerSeat, r.departDateTime "
 		."FROM "
 		."( "
-  		."SELECT pr.rideDriverEmail as pr_email, pr.rideDepartDateTime as pr_date "
+  		."SELECT pr.rideDriverEmail AS pr_email, pr.rideDepartDateTime AS pr_date "
   		."FROM Passenger pr "
   		."WHERE pr.passengerEmail = ? "
 		.") "
@@ -169,7 +177,7 @@ class RideController extends Controller
 		$queryForProgressOfBookedRides = "SELECT p.name, p.email, p.age, p.gender, p.avatar, c.carModel, r.departLocation, r.destination, r.pricePerSeat, r.departDateTime "
 		."FROM "
 		."( "
-  		."SELECT pr.rideDriverEmail as pr_email, pr.rideDepartDateTime as pr_date "
+  		."SELECT pr.rideDriverEmail AS pr_email, pr.rideDepartDateTime AS pr_date "
   		."FROM Passenger pr "
   		."WHERE pr.passengerEmail = ? "
 		.") "
@@ -186,7 +194,7 @@ class RideController extends Controller
 		$queryForHistoryOfBookedRides = "SELECT p.name, p.email, p.age, p.gender, p.avatar, c.carModel, r.departLocation, r.destination, r.pricePerSeat, r.departDateTime, r.isCancelled, r.isEnded, r.isStarted "
 		."FROM "
 		."( "
-  		."SELECT pr.rideDriverEmail as pr_email, pr.rideDepartDateTime as pr_date "
+  		."SELECT pr.rideDriverEmail AS pr_email, pr.rideDepartDateTime AS pr_date "
   		."FROM Passenger pr "
   		."WHERE pr.passengerEmail = ? "
 		.") "
@@ -209,13 +217,37 @@ class RideController extends Controller
 
     public function registerRide($passengerEmail, $driverEmail, $date)
     {
-    	DB::insert('INSERT INTO Passenger p (passengerEmail, rideDepartDateTime, rideDriverEmail) values (?,TO_TIMESTAMP(?, \'RR-MM-DD HH24:MI:SS\'),?)', [$passengerEmail, $date, $driverEmail]);
+    	$passenger = DB::select('SELECT * FROM Person p WHERE p.email=?', [$passengerEmail]);
+    	$rideToSignUpFor = DB::select('SELECT * FROM Driver_ride r WHERE r.driverEmail = ? AND r.departDateTime = TO_TIMESTAMP(?, \'RR-MM-DD HH24:MI:SS\')', [$driverEmail, $date]);
+    	DB::update('UPDATE Person SET balance = ? WHERE email = ?', [($passenger[0]->balance - $rideToSignUpFor[0]->priceperseat), $passengerEmail]);
+    	DB::insert('INSERT INTO Passenger p (passengerEmail, rideDepartDateTime, rideDriverEmail) VALUES (?,TO_TIMESTAMP(?, \'RR-MM-DD HH24:MI:SS\'),?)', [$passengerEmail, $date, $driverEmail]);
     	return Redirect::to('/rides/booked');
     }
 
     public function withdrawRide($passengerEmail, $driverEmail, $date)
     {
+    	$passenger = DB::select('SELECT * FROM Person p WHERE p.email=?', [$passengerEmail]);
+    	$rideToWithdrawFrom = DB::select('SELECT * FROM Driver_ride r WHERE r.driverEmail = ? AND r.departDateTime = TO_TIMESTAMP(?, \'RR-MM-DD HH24:MI:SS\')', [$driverEmail, $date]);
+    	DB::update('UPDATE Person SET balance = ? WHERE email = ?', [($passenger[0]->balance + $rideToWithdrawFrom[0]->priceperseat), $passengerEmail]);
     	DB::delete("DELETE FROM Passenger p WHERE p.passengerEmail=? AND p.rideDepartDateTime=TO_TIMESTAMP(?, 'RR-MM-DD HH24:MI:SS') AND p.rideDriverEmail=?", [$passengerEmail, $date, $driverEmail]);
     	return Redirect::to('/rides/booked');
+    }
+
+    public function credit(request $request)
+    {
+    	$email = Session::get('email');
+		$user = DB::select('SELECT * FROM Person p WHERE p.email=?', [$email]);
+
+		$inputs = Request::all();
+		$results = '';
+
+		if(!empty($inputs)) {
+			$creditsToBuy = $inputs['creditsToBuy'];
+			DB::update('UPDATE Person SET balance = ? WHERE email = ?', [($user[0]->balance + $creditsToBuy), $email]);
+			$results = 'You have bought $'.$creditsToBuy.'.00 credits.';
+			$inputs['creditsToBuy'] = '';
+		}
+
+		return view('rides.credit', array('credit' => $inputs, 'results' => $results, 'name' => $user[0]->name, 'avatar' => $user[0]->avatar, 'email' => $user[0]->email, 'admin' => $user[0]->isadmin));
     }
 }

@@ -264,7 +264,7 @@
 													{!! Form::open(array('url' => '/rides/managed/'.$postedride->departdatetime.'/startRide','onsubmit' => "return confirm('Are you sure you want to start the ride?');")) !!}
 														<button type="submit" class="btn rideshare-btn start-btn">Start</button>
 													{!! Form::close() !!}
-													{!! Form::open(array('url' => '/rides/managed/'.$postedride->departdatetime.'/cancelRide','onsubmit' => "return confirm('Are you sure you want to cancel the ride?');")) !!}
+													{!! Form::open(array('url' => '/rides/managed/'.$postedride->departdatetime.'/cancelRide','onsubmit' => "return confirm('Are you sure you want to cancel the ride? All passengers will be refunded $".$postedride->priceperseat.".00.');")) !!}
 														<button type="submit" class="cancel-btn">Cancel</button>
 													{!! Form::close() !!}
 												</div>

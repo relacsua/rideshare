@@ -204,7 +204,7 @@
                 <p>Avalaible</p>
               </div>
               <div class="col-md-3 result-ride-start-btn-holder">
-                {!! Form::open(array('url' => '/rides/passenger/'.$email.'/driver/'.$result->driveremail.'/datetime/'.$result->departdatetime, 'onsubmit' => "return confirm('Are you sure you want to sign up for the ride?');")) !!}
+                {!! Form::open(array('url' => '/rides/passenger/'.$email.'/driver/'.$result->driveremail.'/datetime/'.$result->departdatetime, 'onsubmit' => "return confirm('Are you sure you want to sign up for the ride? $".$result->priceperseat.".00 will be deducted from your account balance.');")) !!}
                   <button type="submit" class="btn rideshare-btn">take this ride</button>
                 {!! Form::close() !!}
               </div>
