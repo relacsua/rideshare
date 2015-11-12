@@ -177,7 +177,7 @@ class RideController extends Controller
 		."WHERE r.isCancelled = 'FALSE' "
 		."AND r.isStarted = 'FALSE' "
 		."AND r.isEnded = 'FALSE' "
-		."AND r.departDateTime > SYSTIMESTAMP+(7/24)";
+		."AND r.departDateTime > SYSTIMESTAMP-(1/24)";
 
 		$queryForProgressOfBookedRides = "SELECT p.name, p.email, p.age, p.gender, p.avatar, c.carModel, r.departLocation, r.destination, r.pricePerSeat, r.departDateTime "
 		."FROM "
@@ -211,7 +211,7 @@ class RideController extends Controller
 		."ON pr_email = c.ownerEmail "
 		."WHERE (r.isCancelled = 'TRUE' "
 		."OR r.isEnded = 'TRUE' "
-		."OR (r.isStarted = 'FALSE' AND r.departDateTime < SYSTIMESTAMP+(7/24)))";
+		."OR (r.isStarted = 'FALSE' AND r.departDateTime < SYSTIMESTAMP-(1/24)))";
 
 		$bookedRides = DB::select($queryForBookedRides, [$email]);
 		$bookedProgressRides = DB::select($queryForProgressOfBookedRides, [$email]);
