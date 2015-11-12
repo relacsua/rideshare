@@ -35,7 +35,7 @@ class UserController extends Controller
     public function dashboard(Request $request)
     {
     	$email = Session::get('email');
-
+      
     	if(!$email) {
     		return Redirect::to('/welcome');
     	} else {
@@ -60,7 +60,7 @@ class UserController extends Controller
         	Session::put('user', $user);
         	return Redirect::to('/signup');
         } else {
-					Session::put('email', $user_email);
+					Session::put('email', $user_email[0]->email);
 					return Redirect::to('/');
         }
     }
