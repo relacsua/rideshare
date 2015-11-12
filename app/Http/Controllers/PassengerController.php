@@ -62,21 +62,7 @@ class PassengerController extends Controller
         $email = Session::get('email');
         $user = DB::select('SELECT * FROM Person p WHERE p.email=?', [$email]);
 
-        // date_default_timezone_set('UTC');
-        // $UTCdate = strtotime($datetime.' Asia/Singapore');
-        // $formatted_datetime = date('y-m-d H:i:s', $UTCdate);
-
         $passengers = DB::select('SELECT * FROM Passenger p WHERE p.passengeremail=? AND p.ridedriveremail=? AND p.ridedepartdatetime=TO_TIMESTAMP(?, \'RR-MM-DD HH24:MI:SS\')', [$passenger, $driver, $datetime]);
-        
-        // foreach ($passengers[0] as $key => &$value) {
-        //     if (in_array($key, ['ridedepartdatetime'])) {
-        //         date_default_timezone_set('Asia/Singapore');
-        //         $UTCdate = strtotime($value.' UTC');
-        //         $value = date('d-m-y H:i:s', $UTCdate);
-        //     }
-        // }
-        // unset($value);
-
 
         return view('passenger.show', ['passengers' => $passengers, 'name' => $user[0]->name, 'avatar' => $user[0]->avatar, 'email' => $user[0]->email, 'admin' => $user[0]->isadmin]);
     }
@@ -92,20 +78,7 @@ class PassengerController extends Controller
         $email = Session::get('email');
         $user = DB::select('SELECT * FROM Person p WHERE p.email=?', [$email]);
 
-        // date_default_timezone_set('UTC');
-        // $UTCdate = strtotime($datetime.' Asia/Singapore');
-        // $formatted_datetime = date('y-m-d H:i:s', $UTCdate);
-
         $passengerz = DB::select('SELECT * FROM Passenger p WHERE p.passengeremail=? AND p.ridedriveremail=? AND p.ridedepartdatetime=TO_TIMESTAMP(?, \'RR-MM-DD HH24:MI:SS\')', [$passenger, $driver, $datetime]);
-        
-        // foreach ($passengerz[0] as $key => &$value) {
-        //     if (in_array($key, ['ridedepartdatetime'])) {
-        //         date_default_timezone_set('Asia/Singapore');
-        //         $UTCdate = strtotime($value.' UTC');
-        //         $value = date('d-m-y H:i:s', $UTCdate);
-        //     }
-        // }
-        // unset($value);
 
         $passenger_details = array(
             'passengeremail' => $passengerz[0]->passengeremail,
@@ -130,10 +103,6 @@ class PassengerController extends Controller
         $passengeremail = $inputs['passengeremail'];
         $ridedepartdatetime = $inputs['ridedepartdatetime'];
 
-        // date_default_timezone_set('UTC');
-        // $UTCdate = strtotime($ridedepartdatetime.' Asia/Singapore');
-        // $formatted_datetime = date('y-m-d H:i:s', $UTCdate);
-
         $ridedriveremail = $inputs['ridedriveremail'];
 
         DB::update('UPDATE Passenger set passengeremail = ?, ridedepartdatetime = ?, ridedriveremail = ? WHERE passengeremail = ? AND ridedepartdatetime = ? AND ridedriveremail = ?', [$passengeremail, $ridedepartdatetime, $ridedriveremail, $passenger, $datetime, $driver]);
@@ -149,11 +118,7 @@ class PassengerController extends Controller
      */
     public function destroy($passenger, $driver, $datetime)
     {
-        // date_default_timezone_set('UTC');
-        // $UTCdate = strtotime($datetime.' Asia/Singapore');
-        // $formatted_datetime = date('y-m-d H:i:s', $UTCdate);
-
-        DB::delete('DELETE FROM Passenger p WHERE p.ridedriveremail=? AND p.passengeremail=? AND p.ridedepartdatetime=TO_TIMESTAMP(?, \'RR-MM-DD HH24:MI:SS\')', [$driver, $passenger, $formatted_datetime]);
+        DB::delete('DELETE FROM Passenger p WHERE p.ridedriveremail=? AND p.passengeremail=? AND p.ridedepartdatetime=TO_TIMESTAMP(?, \'RR-MM-DD HH24:MI:SS\')', [$driver, $passenger, $datetime]);
         return Redirect::to('/passengers');
     }
 }
