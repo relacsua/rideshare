@@ -25,7 +25,9 @@ class DriverRideController extends Controller
     {
         $email = Session::get('email');
         $person = DB::select('SELECT * FROM Person p WHERE p.email=?', [$email]);
-        $driverrides = DB::select('SELECT * FROM Driver_Ride');
+
+        $driverrides = DB::select('SELECT * FROM Driver_Ride ORDER BY departDateTime ASC');
+
         return view('driverride.index', ['driverrides' => $driverrides, 'name' => $person[0]->name, 'avatar' => $person[0]->avatar, 'email' => $person[0]->email, 'admin' => $person[0]->isadmin]);
     }
 
@@ -60,7 +62,7 @@ class DriverRideController extends Controller
     {
         $email = Session::get('email');
         $user = DB::select('SELECT * FROM Person p WHERE p.email=?', [$email]);
-        $driverride = DB::select("SELECT * FROM Driver_Ride r WHERE r.driveremail=? AND r.departdatetime=TO_TIMESTAMP(?, 'RR-MM-DD HH24:MI:SS')", [$driver, $datetime]);
+        $driverride = DB::select("SELECT * FROM Driver_Ride r WHERE r.driveremail=? AND r.departdatetime=TO_TIMESTAMP(?, \'RR-MM-DD HH24:MI:SS\')", [$driver, $datetime]);
         return view('driverride.show', ['driverrides' => $driverride, 'name' => $user[0]->name, 'avatar' => $user[0]->avatar, 'email' => $user[0]->email, 'admin' => $user[0]->isadmin]);
     }
 
@@ -77,8 +79,8 @@ class DriverRideController extends Controller
         $Location = new Location;
         $validLocations = $Location->getValidLocations();
         
-        $curr_driver = DB::select('SELECT * FROM Owns_Car c where c.ownerEmail=?', [$driver]);
-        $driverride = DB::select("SELECT * FROM Driver_Ride r WHERE r.driveremail=? AND r.departdatetime=TO_TIMESTAMP(?, 'RR-MM-DD HH24:MI:SS')", [$driver, $datetime]);
+        $curr_driver = DB::select('SELECT * FROM Owns_Car c WHERE c.ownerEmail=?', [$driver]);
+        $driverride = DB::select("SELECT * FROM Driver_Ride r WHERE r.driveremail=? AND r.departdatetime=TO_TIMESTAMP(?, \'RR-MM-DD HH24:MI:SS\')", [$driver, $datetime]);
 
         $driverride_details = array(
             'departDateTime' => $newDate = date("d-m-y H:i:s", strtotime($driverride[0]->departdatetime)),
@@ -114,7 +116,7 @@ class DriverRideController extends Controller
         $isstarted = $inputs['isStarted'];
         $isended = $inputs['isEnded'];
 
-        DB::update('UPDATE Driver_Ride set departlocation = ?, destination = ?, priceperseat = ?, numseats = ?, iscancelled = ?, isstarted = ?, isended = ?  WHERE driveremail = ? AND departdatetime = TO_TIMESTAMP(?, \'DD-MM-RR HH24:MI:SS\')', [$departlocation, $destination, $priceperseat, $numseats, $iscancelled, $isstarted, $isended, $driver, $datetime]);
+        DB::update('UPDATE Driver_Ride SET departlocation = ?, destination = ?, priceperseat = ?, numseats = ?, iscancelled = ?, isstarted = ?, isended = ?  WHERE driveremail = ? AND departdatetime = TO_TIMESTAMP(?, \'DD-MM-RR HH24:MI:SS\')', [$departlocation, $destination, $priceperseat, $numseats, $iscancelled, $isstarted, $isended, $driver, $datetime]);
         return Redirect::to('/driverrides/driver/'.$driver.'/datetime/'.date_format(date_create_from_format('d-m-y H:i:s', $datetime), 'Y-m-d H:i:s'));
     }
 
