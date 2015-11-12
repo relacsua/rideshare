@@ -3,6 +3,11 @@
 @section('content')
 	<link rel="stylesheet" type="text/css" href="{{ asset('/css/new_profile.css') }}">
 	<div class="row">
+		@if(Session::has('errors'))
+	        <div class="alert alert-danger">
+	            <h4><center>{{ Session::get('errors') }}</center></h4>
+	        </div>
+	    @endif
 		<div class="col-lg-12">
 			<h1 class="page-title">
 				<span class="glyphicon glyphicon-user" aria-hidden="true"></span>

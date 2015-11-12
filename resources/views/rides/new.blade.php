@@ -6,6 +6,11 @@
 
 @section('content')
   <div class="row">
+    @if(Session::has('errors'))
+        <div class="alert alert-danger">
+            <h4><center>{{ Session::get('errors') }}</center></h4>
+        </div>
+    @endif
     <div class="col-md-4 col-md-offset-4 col-sm-12">
     	<h3>Create a ride</h3>
         
