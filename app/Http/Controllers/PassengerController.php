@@ -136,7 +136,7 @@ class PassengerController extends Controller
 
         $ridedriveremail = $inputs['ridedriveremail'];
 
-        DB::update("UPDATE Passenger set passengeremail = ?, ridedepartdatetime = ?, ridedriveremail = ? WHERE passengeremail = ? AND ridedepartdatetime = ? AND ridedriveremail = ?", [$passengeremail, $ridedepartdatetime, $ridedriveremail, $passenger, $datetime, $driver]);
+        DB::update('UPDATE Passenger set passengeremail = ?, ridedepartdatetime = ?, ridedriveremail = ? WHERE passengeremail = ? AND ridedepartdatetime = ? AND ridedriveremail = ?', [$passengeremail, $ridedepartdatetime, $ridedriveremail, $passenger, $datetime, $driver]);
 
         return Redirect::to('/passengers/passenger/'.$passengeremail.'/driver/'.$ridedriveremail.'/datetime/'.$ridedepartdatetime);
     }

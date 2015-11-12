@@ -62,7 +62,7 @@ class DriverRideController extends Controller
     {
         $email = Session::get('email');
         $user = DB::select('SELECT * FROM Person p WHERE p.email=?', [$email]);
-        $driverride = DB::select("SELECT * FROM Driver_Ride r WHERE r.driveremail=? AND r.departdatetime=TO_TIMESTAMP(?, \'RR-MM-DD HH24:MI:SS\')", [$driver, $datetime]);
+        $driverride = DB::select('SELECT * FROM Driver_Ride r WHERE r.driveremail=? AND r.departdatetime=TO_TIMESTAMP(?, \'RR-MM-DD HH24:MI:SS\')', [$driver, $datetime]);
         return view('driverride.show', ['driverrides' => $driverride, 'name' => $user[0]->name, 'avatar' => $user[0]->avatar, 'email' => $user[0]->email, 'admin' => $user[0]->isadmin]);
     }
 
@@ -80,7 +80,7 @@ class DriverRideController extends Controller
         $validLocations = $Location->getValidLocations();
         
         $curr_driver = DB::select('SELECT * FROM Owns_Car c WHERE c.ownerEmail=?', [$driver]);
-        $driverride = DB::select("SELECT * FROM Driver_Ride r WHERE r.driveremail=? AND r.departdatetime=TO_TIMESTAMP(?, \'RR-MM-DD HH24:MI:SS\')", [$driver, $datetime]);
+        $driverride = DB::select('SELECT * FROM Driver_Ride r WHERE r.driveremail=? AND r.departdatetime=TO_TIMESTAMP(?, \'RR-MM-DD HH24:MI:SS\')', [$driver, $datetime]);
 
         $driverride_details = array(
             'departDateTime' => $newDate = date("d-m-y H:i:s", strtotime($driverride[0]->departdatetime)),

@@ -13,7 +13,17 @@
 				<thead>
 					<tr>
 						@foreach ($cars[0] as $key => $value)
-							<th>{{ $key }}</th>
+							@if ($key == 'carplateno')
+								<th>Car Plate Number</th>
+							@elseif ($key == 'carmodel')
+								<th>Car Model</th>
+							@elseif ($key == 'ownerlicenseno')
+								<th>Owner's License Number</th>
+							@elseif ($key == 'numseats')
+								<th>Seating Capacity</th>
+							@elseif ($key == 'owneremail')
+								<th>Owner</th>
+							@endif
 						@endforeach	
 						<th>Actions</th>
 					</tr>

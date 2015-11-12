@@ -14,7 +14,21 @@
 					<tr>
 						@foreach ($persons[0] as $key => $value)
 							@if (!in_array($key, ['password', 'isadmin']))
-								<th>{{ $key }}</th>
+								@if ($key == 'email')
+									<th>Email</th>
+								@elseif ($key == 'name')
+									<th>Name</th>
+								@elseif ($key == 'balance')
+									<th>Balance</th>
+								@elseif ($key == 'age')
+									<th>Age</th>
+								@elseif ($key == 'gender')
+									<th>Gender</th>
+								@elseif ($key == 'avatar')
+									<th>Avatar</th>
+								@else
+									<th>{{$key}}</th>
+								@endif
 							@endif
 						@endforeach	
 						<th>Actions</th>

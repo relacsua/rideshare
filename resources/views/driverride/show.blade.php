@@ -13,7 +13,21 @@
 				<thead>
 					<tr>
 						@foreach ($driverrides[0] as $key => $value)
-							<th>{{ $key }}</th>
+							@if ($key == 'departdatetime')
+								<th>Departure Date & Time</th>
+							@elseif ($key == 'departlocation')
+								<th>Departure Location</th>
+							@elseif ($key == 'destination')
+								<th>Destination</th>
+							@elseif ($key == 'driveremail')
+								<th>Driver</th>
+							@elseif ($key == 'priceperseat')
+								<th>Price-Per-Seat</th>
+							@elseif ($key == 'numseats')
+								<th>Ride Seating Capacity</th>
+							@else
+								<th>{{$key}}</th>
+							@endif
 						@endforeach
 					</tr>
 				</thead>

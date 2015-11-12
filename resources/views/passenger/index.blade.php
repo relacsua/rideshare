@@ -13,7 +13,15 @@
 				<thead>
 					<tr>
 						@foreach ($passengers[0] as $key => $value)
-							<th>{{ $key }}</th>
+							@if ($key == 'passengeremail')
+								<th>Passenger</th>
+							@elseif ($key == 'ridedepartdatetime')
+								<th>Ride Departure Date & Time</th>
+							@elseif ($key == 'ridedriveremail')
+								<th>Ride Driver</th>
+							@else
+								<th>{{$key}}</th>
+							@endif
 						@endforeach	
 						<th>Actions</th>
 					</tr>

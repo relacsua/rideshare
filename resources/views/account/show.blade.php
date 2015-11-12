@@ -15,7 +15,21 @@
 					<tr>
 						@foreach ($person[0] as $key => $value)
 							@if (!in_array($key, ['password', 'isadmin']))
-								<th>{{ $key }}</th>
+								@if ($key == 'email')
+									<th>Email</th>
+								@elseif ($key == 'name')
+									<th>Name</th>
+								@elseif ($key == 'balance')
+									<th>Balance</th>
+								@elseif ($key == 'age')
+									<th>Age</th>
+								@elseif ($key == 'gender')
+									<th>Gender</th>
+								@elseif ($key == 'avatar')
+									<th>Avatar</th>
+								@else
+									<th>{{$key}}</th>
+								@endif
 							@endif
 						@endforeach	
 					</tr>
@@ -64,7 +78,15 @@
 						<tr>
 							@foreach ($car[0] as $key => $value)
 								@if (!in_array($key, ['owneremail']))
-									<th>{{ $key }}</th>
+									@if ($key == 'carplateno')
+										<th>Car Plate Number</th>
+									@elseif ($key == 'carmodel')
+										<th>Car Model</th>
+									@elseif ($key == 'ownerlicenseno')
+										<th>Owner's License Number</th>
+									@elseif ($key == 'numseats')
+										<th>Seating Capacity</th>
+									@endif
 								@endif
 							@endforeach	
 						</tr>

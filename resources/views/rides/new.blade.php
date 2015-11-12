@@ -44,7 +44,7 @@
 
             <div class="form-group">
                 {!! Form::label('numSeats', 'Number of seats available') !!}
-                {!! Form::input('number', 'numSeats', null, ['class' => 'form-control', 'min' => 1, 'max' => $maxSeats]) !!}
+                {!! Form::input('number', 'numSeats', null, ['class' => 'form-control', 'min' => 1]) !!} {{-- , 'max' => $maxSeats --}}
             </div>
 
           	{!! Form::submit('Post a ride', ['class' => 'btn btn-default rideshare-btn']) !!}
