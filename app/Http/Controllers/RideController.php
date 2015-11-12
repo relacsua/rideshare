@@ -238,21 +238,31 @@ class RideController extends Controller
     	return Redirect::to('/rides/booked');
     }
 
-    public function credit(request $request)
+    public function creditPage(request $request)
     {
     	$email = Session::get('email');
 		$user = DB::select('SELECT * FROM Person p WHERE p.email=?', [$email]);
+		$credit = array();
+		
+		return view('rides.credit', array('credit' => $credit, 'name' => $user[0]->name, 'avatar' => $user[0]->avatar, 'email' => $user[0]->email, 'admin' => $user[0]->isadmin));
+    }
 
+    public function creditPurchase(request $request)
+    {
+    	$email = Session::get('email');
+		$user = DB::select('SELECT * FROM Person p WHERE p.email=?', [$email]);		
 		$inputs = Request::all();
-		$results = '';
+		$creditsToBuy = $inputs['creditsToBuy'];
 
-		if(!empty($inputs)) {
-			$creditsToBuy = $inputs['creditsToBuy'];
-			DB::update('UPDATE Person SET balance = ? WHERE email = ?', [($user[0]->balance + $creditsToBuy), $email]);
-			$results = 'You have bought $'.$creditsToBuy.'.00 credits.';
-			$inputs['creditsToBuy'] = '';
+		if(!empty($creditsToBuy) ) {
+			if($creditsToBuy <= 0 ) {
+				return Redirect::to('/rides/credit')->with('errors', array('Not a valid credit input.'));
+			} else {
+				DB::update('UPDATE Person SET balance = ? WHERE email = ?', [($user[0]->balance + $creditsToBuy), $email]);
+				return Redirect::to('/');
+			}
+		} else {
+			return Redirect::to('/rides/credit')->with('errors', array('The credit field is empty,'));
 		}
-
-		return view('rides.credit', array('credit' => $inputs, 'results' => $results, 'name' => $user[0]->name, 'avatar' => $user[0]->avatar, 'email' => $user[0]->email, 'admin' => $user[0]->isadmin));
     }
 }

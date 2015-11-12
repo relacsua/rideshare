@@ -125,7 +125,7 @@
 <div class="row" id="form-wrapper">
     <div class="col-md-12">
     	<h3>Buy Credits</h3>
-        {!! Form::model($credit, ['url' => '/rides/credit', 'method' => 'GET', 'class' => 'form-inline']) !!}
+        {!! Form::model($credit, ['url' => '/rides/credit/purchase', 'class' => 'form-inline']) !!}
           <div class="personal-form">
             <div class="row statement-line">
               <p class="statement">Enter amount of credits to buy:</p><br>
@@ -142,9 +142,4 @@
         {!! Form::close() !!}
     </div>
   </div>
-  @if ($results != '')
-    <div class="row">
-      <p class="result-counter">{{$results}}</p>
-    </div>
-  @endif
 @stop

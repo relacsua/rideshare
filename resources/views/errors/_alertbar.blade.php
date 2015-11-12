@@ -33,8 +33,8 @@
 <div class="alert">
 	<img class="close" src="{{ asset('/img/close.png') }}">
 	@foreach ($errors as $error)
-   	<span>{{ $error }}</span>
-  @endforeach
+   		<span>{{ $error }}</span>
+  	@endforeach
 </div>
 
 {{-- script --}}
