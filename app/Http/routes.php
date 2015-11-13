@@ -48,7 +48,7 @@ Route::post('/rides/credit/purchase', ['uses' => 'RideController@creditPurchase'
 Route::group(['middleware' => 'admin'], function()
 {
 	/* Person routes */
-	Route::resource('persons', 'PersonController', ['only' => ['index', 'show', 'edit', 'update', 'delete']]);
+	Route::resource('persons', 'PersonController');
 	
 	/* Profile routes */
 	Route::resource('profiles', 'ProfileController', ['only' => ['index', 'show', 'edit', 'update']]);

@@ -114,6 +114,6 @@ class ProfileController extends Controller
     public function destroy($email, $id)
     {
         DB::delete('DELETE FROM has_profile p WHERE p.email=? AND p.userid=?', [$email, $id]);
-        return Redirect::to('/persons');
+        return Redirect::to('/profiles');
     }
 }
