@@ -4,7 +4,7 @@
 
 ### Introduction
 
-A CS2102(Introduction to Database Systems) project. A car sharing app built on Laravel PHP Framework and Oracle Database.
+A CS2102(Introduction to Database Systems) project. A car sharing app built on Laravel PHP Framework and Oracle Database. Refer to the [project report](https://goo.gl/A36Hwp), for more info.
 
 ### Installation
 
