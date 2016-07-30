@@ -18,7 +18,7 @@
         <div class="container">
             <div class="content">
                 <img class='icon' src="{{ asset('/img/rideshare.png') }}" />
-                <h1>RideShare</h2>
+                <h1>RideShare</h1>
                 <p class="slogan">Share your rides &middot; Save some cash &middot; Make new friends</p>
                 <div class="form-wrapper">
                     {!! Form::open(['url' => '/login']) !!}
