@@ -1,16 +1,20 @@
 # RideShare
 
-A CS2102 project. Application that matches drivers with passengers.
+![RideShare](screenshots/WelcomePage.png)
 
-## Setup with Vagrant
+### Introduction
 
-### Setting up the vagrant environment
+A CS2102(Introduction to Database Systems) project. A car sharing app built on Laravel PHP Framework and Oracle Database.
+
+### Installation
+
+#### Setting up the vagrant environment
 
 1. Install [Virtual Box](https://www.virtualbox.org/)
 2. Install [Vagrant](https://www.vagrantup.com/downloads.html)
 3. Setup [laravel/homestead](http://laravel.com/docs/5.1/homestead) environment.
 
-### Setting up project
+#### Setting up project
 
 1. Clone this repository into your projects folder.
 2. Run ```$ composer update```. Make sure [composer](https://getcomposer.org/doc/00-intro.md) is installed before you run this command.
